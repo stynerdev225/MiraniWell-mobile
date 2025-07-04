@@ -9,6 +9,7 @@ export const mockUsers = [
     username: "johndoe",
     email: "john@example.com",
     imageUrl: "https://i.pravatar.cc/150?img=1",
+    imageId: "img1",
     bio: "Software developer and photography enthusiast",
     accountId: "acc1",
     isCourseUser: true,
@@ -17,6 +18,7 @@ export const mockUsers = [
     hasPaid: false,
     paymentDate: "", // Add empty payment date
     homeworkSubmission: "",
+    posts: [], // Add empty posts array
     // Add saved posts reference to match app's expected structure
     save: [
       {
@@ -34,8 +36,10 @@ export const mockUsers = [
     username: "janesmith",
     email: "jane@example.com",
     imageUrl: "https://i.pravatar.cc/150?img=5",
+    imageId: "img2",
     bio: "Graphic designer and traveler",
     accountId: "acc2",
+    posts: [], // Add empty posts array
     // Add saved posts reference to match app's expected structure
     save: [
       {
@@ -53,8 +57,10 @@ export const mockUsers = [
     username: "alex",
     email: "alex@example.com",
     imageUrl: "https://i.pravatar.cc/150?img=3",
+    imageId: "img3",
     bio: "Digital nomad and coffee lover",
     accountId: "acc3",
+    posts: [], // Add empty posts array
     // Add empty save array to prevent undefined errors
     save: [],
   },
@@ -246,6 +252,10 @@ export const mockUserCredentials: Record<string, {password: string, userId: stri
   "john@example.com": { password: "password123", userId: "user1" },
   "jane@example.com": { password: "password123", userId: "user2" },
   "alex@example.com": { password: "password123", userId: "user3" },
+  // Add some easy-to-remember credentials for testing
+  "test@test.com": { password: "password", userId: "user1" },
+  "demo@demo.com": { password: "demo", userId: "user1" },
+  "admin@admin.com": { password: "admin", userId: "user1" },
 };
 
 // Helper function to find a user by email

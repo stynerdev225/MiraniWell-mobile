@@ -12,6 +12,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { SigninValidation } from "@/lib/validation";
 import { useSignInAccount } from "@/lib/react-query/queries";
 import { useUserContext } from "@/context/AuthContext";
+import { isDevelopment } from "@/lib/appwrite/devUtils";
 
 const SigninForm = () => {
   const { toast } = useToast();
@@ -111,6 +112,19 @@ const SigninForm = () => {
               Sign up
             </Link>
           </p>
+
+          {/* Development mode helper */}
+          {isDevelopment && (
+            <div className="mt-4 p-3 bg-yellow-600/10 border border-yellow-600/20 rounded-lg">
+              <p className="text-xs text-yellow-400 font-medium mb-2">🚀 Development Mode</p>
+              <p className="text-xs text-light-2 mb-2">Test credentials:</p>
+              <div className="text-xs text-light-3 space-y-1">
+                <div>• test@test.com / password</div>
+                <div>• demo@demo.com / demo</div>
+                <div>• john@example.com / password123</div>
+              </div>
+            </div>
+          )}
         </form>
       </div>
     </Form>

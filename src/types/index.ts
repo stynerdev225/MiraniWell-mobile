@@ -50,6 +50,7 @@ export type IUser = {
   hasPaid?: boolean;
   paymentDate?: string;
   homeworkSubmission?: string;
+  liked?: any[]; // Add liked posts array
 };
 
 export type INewUser = {

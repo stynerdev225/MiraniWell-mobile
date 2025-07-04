@@ -252,7 +252,7 @@ export async function getInfinitePosts({ pageParam }: { pageParam: number }) {
   if (isDevelopment) {
     // Import dynamically to avoid circular dependencies
     const { getInfinitePosts: devGetInfinitePosts } = await import('./devApi');
-    return devGetInfinitePosts({ pageParam });
+    return devGetInfinitePosts({ pageParam: pageParam.toString() });
   }
 
   const queries: any[] = [Query.orderDesc("$updatedAt"), Query.limit(9)];
@@ -515,6 +515,12 @@ export async function getUsers(limit?: number) {
 // ============================== GET USER BY ID
 export async function getUserById(userId: string) {
   try {
+    if (isDevelopment) {
+      // Import dynamically to avoid circular dependencies
+      const { getUserById: devGetUserById } = await import('./devApi');
+      return devGetUserById(userId);
+    }
+
     const user = await databases.getDocument(
       appwriteConfig.databaseId,
       appwriteConfig.userCollectionId,

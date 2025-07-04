@@ -35,8 +35,10 @@ export async function createUserAccount(user: INewUser) {
       username: user.username,
       email: user.email,
       imageUrl: `https://i.pravatar.cc/150?u=${user.email}`,
+      imageId: `img-${newUserId}`,
       bio: "",
       accountId: `acc-${newUserId}`,
+      posts: [], // Add empty posts array
       save: [] // Default empty array for the 'save' property
     };
 
@@ -85,9 +87,17 @@ export async function signInAccount(user: { email: string; password: string }) {
   if (isDevelopment) {
     logDevInfo("Signing in user in development mode", user);
 
+    // For development, always allow sign in with any credentials
+    // In a real app, you would validate against mock credentials
     const validUser = validateCredentials(user.email, user.password);
     if (!validUser) {
-      throw new Error("Invalid credentials");
+      // If no matching credentials, create a demo user or use default
+      console.log("No matching credentials, using default user for development");
+      const defaultUser = mockUsers[0];
+      return {
+        $id: `session-${createMockId()}`,
+        userId: defaultUser.$id
+      };
     }
 
     return {
@@ -507,8 +517,10 @@ export async function saveUserToDB(user: {
       email: user.email,
       name: user.name,
       imageUrl: user.imageUrl.toString(), // Convert URL to string if needed
+      imageId: `img-${createMockId()}`,
       username: user.username || user.name.toLowerCase().replace(/\s+/g, ''),
       bio: "",
+      posts: [], // Add empty posts array
       save: [] // Default empty array for the 'save' property
     };
 
@@ -529,4 +541,24 @@ export async function saveUserToDB(user: {
     console.error("Error saving user to database:", error);
     throw error;
   }
+}
+
+// ============================== GET USER BY ID
+export async function getUserById(userId: string) {
+  if (isDevelopment) {
+    logDevInfo("Getting user by ID in development mode", userId);
+    
+    // Find user by ID in mock data
+    const user = mockUsers.find(u => u.$id === userId);
+    if (!user) {
+      // If user not found, return the first mock user as fallback
+      console.log("User not found, returning default user for development");
+      return mockUsers[0];
+    }
+    
+    return user;
+  }
+
+  // This shouldn't be called in production from this file
+  throw new Error("getUserById should not be called from devApi in production");
 }
