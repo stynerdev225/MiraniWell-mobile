@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg xmlns="http://www.w3.org/2000/svg"
+    xmlns:xlink="http://www.w3.org/1999/xlink" width="1200" height="300" viewBox="0 0 1200 300">
+    <defs>
+        <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" style="stop-color:#0F2027;stop-opacity:1" />
+            <stop offset="50%" style="stop-color:#203A43;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#2C5364;stop-opacity:1" />
+        </linearGradient>
+        <filter id="blur" x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur in="SourceGraphic" stdDeviation="10" />
+        </filter>
+
+        <!-- Bookmark shape definition -->
+        <path id="bookmark" d="M0,0 v50 l15,-10 l15,10 v-50 z" />
+
+        <!-- Collection shape definition -->
+        <path id="collection" d="M20,0 h60 v80 h-60 z" />
+    </defs>
+
+    <!-- Background -->
+    <rect width="1200" height="300" fill="url(#bgGradient)"/>
+
+    <!-- Decorative elements -->
+    <circle cx="300" cy="150" r="120" fill="#ffffff" opacity="0.05" filter="url(#blur)"/>
+    <circle cx="950" cy="100" r="100" fill="#ffffff" opacity="0.05" filter="url(#blur)"/>
+    <circle cx="600" cy="250" r="80" fill="#ffffff" opacity="0.05" filter="url(#blur)"/>
+
+    <!-- Grid Pattern -->
+    <g opacity="0.1" stroke="#ffffff" stroke-width="0.5">
+        <line x1="0" y1="50" x2="1200" y2="50" />
+        <line x1="0" y1="100" x2="1200" y2="100" />
+        <line x1="0" y1="150" x2="1200" y2="150" />
+        <line x1="0" y1="200" x2="1200" y2="200" />
+        <line x1="0" y1="250" x2="1200" y2="250" />
+
+        <line x1="100" y1="0" x2="100" y2="300" />
+        <line x1="200" y1="0" x2="200" y2="300" />
+        <line x1="300" y1="0" x2="300" y2="300" />
+        <line x1="400" y1="0" x2="400" y2="300" />
+        <line x1="500" y1="0" x2="500" y2="300" />
+        <line x1="600" y1="0" x2="600" y2="300" />
+        <line x1="700" y1="0" x2="700" y2="300" />
+        <line x1="800" y1="0" x2="800" y2="300" />
+        <line x1="900" y1="0" x2="900" y2="300" />
+        <line x1="1000" y1="0" x2="1000" y2="300" />
+        <line x1="1100" y1="0" x2="1100" y2="300" />
+    </g>
+
+    <!-- Floating Bookmarks -->
+    <g opacity="0.7">
+        <!-- Bookmark 1 -->
+        <use xlink:href="#bookmark" transform="translate(200, 80)" fill="#ffffff" opacity="0.6" />
+
+        <!-- Bookmark 2 -->
+        <use xlink:href="#bookmark" transform="translate(300, 120) rotate(10)" fill="#ffffff" opacity="0.4" />
+
+        <!-- Bookmark 3 -->
+        <use xlink:href="#bookmark" transform="translate(400, 60) rotate(-5)" fill="#ffffff" opacity="0.5" />
+
+        <!-- Bookmark 4 -->
+        <use xlink:href="#bookmark" transform="translate(600, 100) rotate(5)" fill="#ffffff" opacity="0.6" />
+
+        <!-- Bookmark 5 -->
+        <use xlink:href="#bookmark" transform="translate(700, 140) rotate(-8)" fill="#ffffff" opacity="0.4" />
+
+        <!-- Bookmark 6 -->
+        <use xlink:href="#bookmark" transform="translate(800, 70) rotate(15)" fill="#ffffff" opacity="0.5" />
+
+        <!-- Bookmark 7 -->
+        <use xlink:href="#bookmark" transform="translate(900, 130) rotate(-12)" fill="#ffffff" opacity="0.7" />
+    </g>
+
+    <!-- Main Bookmark Icon -->
+    <g transform="translate(500, 150)">
+        <path d="M-40,-60 v80 l40,-30 l40,30 v-80 z" fill="none" stroke="#ffffff" stroke-width="4" />
+        <line x1="-20" y1="-40" x2="20" y2="-40" stroke="#ffffff" stroke-width="4" />
+        <line x1="-20" y1="-20" x2="20" y2="-20" stroke="#ffffff" stroke-width="4" />
+        <line x1="-20" y1="0" x2="0" y2="0" stroke="#ffffff" stroke-width="4" />
+    </g>
+
+    <!-- Collection Icon -->
+    <g transform="translate(750, 150)">
+        <!-- Base book/document -->
+        <rect x="-50" y="-40" width="70" height="80" fill="none" stroke="#ffffff" stroke-width="3" rx="2" />
+
+        <!-- Pages lines -->
+        <line x1="-30" y1="-20" x2="0" y2="-20" stroke="#ffffff" stroke-width="2" />
+        <line x1="-30" y1="0" x2="0" y2="0" stroke="#ffffff" stroke-width="2" />
+        <line x1="-30" y1="20" x2="0" y2="20" stroke="#ffffff" stroke-width="2" />
+
+        <!-- Stacked document effect -->
+        <rect x="-45" y="-45" width="70" height="80" fill="none" stroke="#ffffff" stroke-width="2" rx="2" opacity="0.5" />
+        <rect x="-40" y="-50" width="70" height="80" fill="none" stroke="#ffffff" stroke-width="1" rx="2" opacity="0.3" />
+    </g>
+
+    <!-- Animated Particles -->
+    <g opacity="0.4">
+        <circle cx="150" cy="70" r="3" fill="#ffffff" />
+        <circle cx="350" cy="200" r="2" fill="#ffffff" />
+        <circle cx="550" cy="50" r="4" fill="#ffffff" />
+        <circle cx="650" cy="220" r="2" fill="#ffffff" />
+        <circle cx="850" cy="180" r="3" fill="#ffffff" />
+        <circle cx="950" cy="90" r="2" fill="#ffffff" />
+        <circle cx="1050" cy="150" r="4" fill="#ffffff" />
+    </g>
+</svg>

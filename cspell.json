@@ -1,0 +1,25 @@
+{
+  "version": "0.2",
+  "language": "en",
+  "words": [
+    "affirmations",
+    "Appwrite",
+    "Chakra",
+    "chakras",
+    "DGIXT",
+    "gemini",
+    "mindfulness",
+    "Mirani",
+    "overscroll",
+    "rgba",
+    "rituals",
+    "Upnjg",
+    "wellness",
+    "xlink"
+  ],
+  "ignorePaths": [
+    "node_modules/**",
+    "dist/**",
+    "build/**"
+  ]
+}
