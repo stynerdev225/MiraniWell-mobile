@@ -247,8 +247,48 @@ export const mockSaves = [
   },
 ];
 
-// Mock user credentials store
-export const mockUserCredentials: Record<string, {password: string, userId: string}> = {
+// Helper function to load mock data from localStorage
+function loadMockDataFromStorage() {
+  if (typeof window === 'undefined') return; // SSR safety
+  
+  try {
+    // Load stored users
+    const storedUsers = localStorage.getItem('mockUsers');
+    if (storedUsers) {
+      const parsedUsers = JSON.parse(storedUsers);
+      mockUsers.length = 0; // Clear existing
+      mockUsers.push(...parsedUsers);
+    }
+    
+    // Load stored credentials
+    const storedCredentials = localStorage.getItem('mockUserCredentials');
+    if (storedCredentials) {
+      const parsedCredentials = JSON.parse(storedCredentials);
+      Object.keys(mockUserCredentials).forEach(key => delete mockUserCredentials[key]); // Clear existing
+      Object.assign(mockUserCredentials, parsedCredentials);
+    }
+  } catch (error) {
+    console.log('Error loading mock data from storage:', error);
+  }
+}
+
+// Helper function to save mock data to localStorage
+function saveMockDataToStorage() {
+  if (typeof window === 'undefined') return; // SSR safety
+  
+  try {
+    localStorage.setItem('mockUsers', JSON.stringify(mockUsers));
+    localStorage.setItem('mockUserCredentials', JSON.stringify(mockUserCredentials));
+  } catch (error) {
+    console.log('Error saving mock data to storage:', error);
+  }
+}
+
+// Load data on module initialization
+loadMockDataFromStorage();
+
+// Initialize with default credentials if not already loaded
+const defaultCredentials: Record<string, {password: string, userId: string}> = {
   "john@example.com": { password: "password123", userId: "user1" },
   "jane@example.com": { password: "password123", userId: "user2" },
   "alex@example.com": { password: "password123", userId: "user3" },
@@ -257,6 +297,34 @@ export const mockUserCredentials: Record<string, {password: string, userId: stri
   "demo@demo.com": { password: "demo", userId: "user1" },
   "admin@admin.com": { password: "admin", userId: "user1" },
 };
+
+// Mock user credentials store
+export const mockUserCredentials: Record<string, {password: string, userId: string}> = { ...defaultCredentials };
+
+// Load data on module initialization and merge with defaults
+loadMockDataFromStorage();
+
+// Ensure default credentials are always available
+Object.keys(defaultCredentials).forEach(email => {
+  if (!mockUserCredentials[email]) {
+    mockUserCredentials[email] = defaultCredentials[email];
+  }
+});
+
+// Helper function to add a new user to mock data
+export function addMockUser(user: any, password: string) {
+  // Add to mock users
+  mockUsers.push(user);
+  
+  // Add to mock credentials
+  mockUserCredentials[user.email] = {
+    password: password,
+    userId: user.$id
+  };
+  
+  // Save to localStorage
+  saveMockDataToStorage();
+}
 
 // Helper function to find a user by email
 export function findUserByEmail(email: string) {

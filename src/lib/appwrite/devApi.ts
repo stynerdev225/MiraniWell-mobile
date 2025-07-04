@@ -8,7 +8,8 @@ import {
   mockPosts,
   mockUserCredentials,
   validateCredentials,
-  createMockId
+  createMockId,
+  addMockUser
 } from "./mockData";
 import { getFilePreview, uploadFile, deleteFile } from "./api";
 
@@ -42,14 +43,8 @@ export async function createUserAccount(user: INewUser) {
       save: [] // Default empty array for the 'save' property
     };
 
-    // Add to mock credentials
-    mockUserCredentials[user.email] = {
-      password: user.password,
-      userId: newUserId
-    };
-
-    // Add to mock users
-    mockUsers.push(mockUser);
+    // Add to mock data with persistence
+    addMockUser(mockUser, user.password);
 
     return mockUser;
   }
@@ -86,20 +81,31 @@ export async function createUserAccount(user: INewUser) {
 export async function signInAccount(user: { email: string; password: string }) {
   if (isDevelopment) {
     logDevInfo("Signing in user in development mode", user);
+    
+    // Debug: Log current mock credentials
+    console.log("Available mock credentials:", Object.keys(mockUserCredentials));
 
-    // For development, always allow sign in with any credentials
-    // In a real app, you would validate against mock credentials
+    // For development, validate credentials first
     const validUser = validateCredentials(user.email, user.password);
     if (!validUser) {
-      // If no matching credentials, create a demo user or use default
-      console.log("No matching credentials, using default user for development");
-      const defaultUser = mockUsers[0];
-      return {
-        $id: `session-${createMockId()}`,
-        userId: defaultUser.$id
-      };
+      // If no matching credentials, check if it's a test account
+      console.log(`No matching credentials found for ${user.email}. Available emails:`, Object.keys(mockUserCredentials));
+      
+      // For flexibility, create a session with the first user if using test credentials
+      if (user.email.includes('test') || user.email.includes('demo') || user.email.includes('admin')) {
+        console.log("Using default user for test credentials");
+        const defaultUser = mockUsers[0];
+        return {
+          $id: `session-${createMockId()}`,
+          userId: defaultUser.$id
+        };
+      }
+      
+      // Otherwise, throw an error for clarity
+      throw new Error(`Invalid credentials for ${user.email}. Please check your email and password or sign up first.`);
     }
 
+    console.log("Valid user found:", validUser.email);
     return {
       $id: `session-${createMockId()}`,
       userId: validUser.$id
