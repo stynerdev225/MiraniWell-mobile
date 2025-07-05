@@ -21,11 +21,35 @@ import {
 } from "lucide-react";
 
 const Saved = () => {
-  const { data: currentUser } = useGetCurrentUser();
+  const { data: currentUser, isLoading: isUserLoading } = useGetCurrentUser();
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
 
+  // Show loading state while user data is being fetched
+  if (isUserLoading) {
+    return (
+      <div className="flex flex-col min-h-screen bg-dark-1 items-center justify-center">
+        <Loader />
+        <p className="text-light-2 mt-4">Loading your saved content...</p>
+      </div>
+    );
+  }
+
+  // Show message if no user data
+  if (!currentUser) {
+    return (
+      <div className="flex flex-col min-h-screen bg-dark-1 items-center justify-center">
+        <div className="text-center">
+          <Bookmark className="w-16 h-16 text-light-4 mx-auto mb-4" />
+          <h2 className="text-xl font-semibold text-light-1 mb-2">No User Data</h2>
+          <p className="text-light-3">Please try refreshing the page or signing in again.</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Safely handle the saves array - it might not exist or be empty
   const savePosts = currentUser?.save
-    .map((savePost: Models.Document, index: number) => {
+    ? currentUser.save.map((savePost: Models.Document, index: number) => {
       // Array of beautiful wellness stock images
       const stockImages = [
         'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&q=80&w=800&ixlib=rb-4.0.3',
@@ -44,8 +68,8 @@ const Saved = () => {
           imageUrl: currentUser.imageUrl,
         },
       };
-    })
-    .reverse();
+    }).reverse()
+    : []; // Return empty array if no saves
 
   // Mock data for enhanced saved content categories
   const savedCategories = [

@@ -12,6 +12,8 @@ import {
   AllUsers,
   MindBodySpirit,
   MockCheckout,
+  Dashboard,
+  Community,
   RitualRooms,
   Journal,
   Affirmations,
@@ -22,12 +24,14 @@ import RootLayout from "./_root/RootLayout";
 import SignupForm from "@/_auth/forms/SignupForm";
 import SigninForm from "@/_auth/forms/SigninForm";
 import { Toaster } from "@/components/ui/toaster";
+import { GlobalLoader } from "@/components/shared";
 
 import "./globals.css";
 
 const App = () => {
   return (
     <main className="flex h-screen">
+      <GlobalLoader />
       <Routes>
         {/* public routes */}
         <Route element={<AuthLayout />}>
@@ -48,6 +52,8 @@ const App = () => {
           <Route path="/update-profile/:id" element={<UpdateProfile />} />
           <Route path="/mind-body-spirit" element={<MindBodySpirit />} />
           <Route path="/mock-checkout" element={<MockCheckout />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/community" element={<Community />} />
           {/* Mirani Well Routes */}
           <Route path="/ritual-rooms" element={<RitualRooms />} />
           <Route path="/journal" element={<Journal />} />

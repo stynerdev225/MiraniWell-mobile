@@ -11,7 +11,7 @@ export default defineConfig({
   },
   server: {
     host: '0.0.0.0', // Bind to all network interfaces
-    port: 3002,      // Try port 3002 first
-    strictPort: false // Allow trying other ports if 3002 is taken
+    port: 3000,      // Try port 3000 first
+    strictPort: false // Allow trying other ports if 3000 is taken
   },
 });

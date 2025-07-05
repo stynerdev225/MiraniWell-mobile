@@ -10,6 +10,8 @@ export { default as LikedPosts } from "./LikedPosts";
 export { default as AllUsers } from "./AllUsers";
 export { default as MindBodySpirit } from "./MindBodySpirit";
 export { default as MockCheckout } from "./MockCheckout";
+export { default as Dashboard } from "./Dashboard";
+export { default as Community } from "./Community";
 // Mirani Well Pages
 export { default as RitualRooms } from "./RitualRooms";
 export { default as Journal } from "./Journal";

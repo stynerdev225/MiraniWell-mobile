@@ -792,13 +792,13 @@ const MindBodySpirit = () => {
                                                             className="w-full relative overflow-hidden rounded-lg cursor-pointer group border border-dark-4"
                                                             onClick={() => {
                                                                 setIsModalOpen(true);
-                                                                setModalVideoUrl("https://www.youtube.com/embed/LWGSwfchz_A?autoplay=1&rel=0&modestbranding=1");
+                                                                setModalVideoUrl("https://www.youtube.com/embed/inpok4MKVLM?autoplay=1&rel=0&modestbranding=1");
                                                             }}
                                                         >
                                                             <div className="relative aspect-video bg-dark-4 rounded-md overflow-hidden">
                                                                 <div className="absolute inset-0 bg-gradient-to-r from-indigo-900/30 to-dark-4 opacity-70"></div>
                                                                 <img
-                                                                    src="https://img.youtube.com/vi/LWGSwfchz_A/mqdefault.jpg"
+                                                                    src="https://img.youtube.com/vi/inpok4MKVLM/mqdefault.jpg"
                                                                     alt="Video thumbnail"
                                                                     className="absolute inset-0 w-full h-full object-cover opacity-50"
                                                                 />
@@ -860,13 +860,13 @@ const MindBodySpirit = () => {
                                                             className="w-full relative overflow-hidden rounded-lg cursor-pointer group border border-dark-4"
                                                             onClick={() => {
                                                                 setIsModalOpen(true);
-                                                                setModalVideoUrl("https://www.youtube.com/embed/lDZGl9Wdc7Y");
+                                                                setModalVideoUrl("https://www.youtube.com/embed/ZToicYcHIOU");
                                                             }}
                                                         >
                                                             <div className="relative aspect-video bg-dark-4 rounded-md overflow-hidden">
                                                                 <div className="absolute inset-0 bg-gradient-to-r from-purple-900/30 to-dark-4 opacity-70"></div>
                                                                 <img
-                                                                    src="https://img.youtube.com/vi/lDZGl9Wdc7Y/mqdefault.jpg"
+                                                                    src="https://img.youtube.com/vi/ZToicYcHIOU/mqdefault.jpg"
                                                                     alt="Video thumbnail"
                                                                     className="absolute inset-0 w-full h-full object-cover opacity-50"
                                                                 />

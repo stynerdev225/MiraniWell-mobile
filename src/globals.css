@@ -14,10 +14,7 @@
     @apply bg-dark-1 text-white min-h-screen font-inter;
   }
 
-  /* Smooth transition for all elements */
-  * {
-    transition: all 0.2s ease-in-out;
-  }
+  /* Very subtle transitions - removed aggressive global transitions */
 }
 
 @layer utilities {
@@ -509,6 +506,7 @@
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
     border-bottom: 1px solid rgba(157, 110, 249, 0.1);
     backdrop-filter: blur(10px);
+    min-height: 60px;
   }
 
   /* User card */
@@ -556,6 +554,15 @@
 
   .custom-range::-ms-fill-upper {
     @apply bg-dark-4 rounded-lg;
+  }
+
+  /* Dynamic Progress Bars and Charts */
+  .progress-bar {
+    width: var(--progress-width);
+  }
+
+  .chart-bar {
+    height: var(--bar-height);
   }
 }
 
@@ -825,7 +832,18 @@
     pointer-events: none !important;
   }
 
-  /* ... existing code ... */
+  /* Fix logout button text color */
+  .nav-link-enhanced:active span,
+  .nav-link-enhanced:focus span,
+  .nav-link-enhanced:focus-visible span {
+    color: rgb(248 250 252) !important; /* text-light-1 equivalent */
+  }
+
+  /* Ensure logout button text stays light on click */
+  .nav-link-enhanced:active .sidebar-text,
+  .nav-link-enhanced:focus .sidebar-text {
+    color: rgb(248 250 252) !important;
+  }
 }
 
 @supports (scrollbar-width: thin) {

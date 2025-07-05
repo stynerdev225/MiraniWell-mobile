@@ -2,10 +2,8 @@
 // This file contains functions to help with development mode
 
 // Check if we are in development mode or demo mode
-// For demo purposes, we'll always use mock data since we don't have a real Appwrite setup
-export const isDevelopment = import.meta.env.MODE === 'development' || 
-                           import.meta.env.VITE_USE_MOCK_DATA === 'true' ||
-                           !import.meta.env.VITE_APPWRITE_PROJECT_ID ||
+// Force disable mock mode - we now have real Appwrite backend
+export const isDevelopment = import.meta.env.VITE_USE_MOCK_DATA === 'true' && 
                            import.meta.env.VITE_APPWRITE_PROJECT_ID === 'mock_project_id';
 
 // For debug purposes

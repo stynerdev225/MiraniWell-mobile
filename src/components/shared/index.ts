@@ -8,3 +8,5 @@ export { default as UserCard } from "./UserCard";
 export { default as FileUploader } from "./FileUploader";
 export { default as ProfileUploader } from "./ProfileUploader";
 export { default as PostStats } from "./PostStats";
+export { default as GlobalLoader } from "./GlobalLoader";
+export { default as PageWrapper } from "./PageWrapper";

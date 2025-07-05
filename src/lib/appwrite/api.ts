@@ -3,6 +3,7 @@ import { ID, Query } from "appwrite";
 import { appwriteConfig, account, databases, storage, avatars } from "./config";
 import { IUpdatePost, INewPost, INewUser, IUpdateUser } from "@/types";
 import { isDevelopment } from "./devUtils";
+import { deleteCurrentSession, setSessionData, clearSessionData } from "./sessionUtils";
 
 // ============================================================
 // AUTH
@@ -17,6 +18,11 @@ export async function createUserAccount(user: INewUser) {
       return devCreateUserAccount(user);
     }
 
+    console.log('Starting user account creation for:', user.email);
+
+    // Clear any existing session
+    await deleteCurrentSession();
+
     const newAccount = await account.create(
       ID.unique(),
       user.email,
@@ -24,22 +30,37 @@ export async function createUserAccount(user: INewUser) {
       user.name
     );
 
-    if (!newAccount) throw Error;
+    if (!newAccount) throw new Error('Failed to create account');
+
+    console.log('Account created successfully:', newAccount.$id);
+
+    // Immediately sign in the new user to get proper session
+    const session = await account.createEmailSession(user.email, user.password);
+    console.log('Session created for new user:', session.$id);
+
+    // Set session data in localStorage
+    setSessionData();
 
     const avatarUrl = avatars.getInitials(user.name);
 
-    const newUser = await saveUserToDB({
+    const userDocumentData = {
       accountId: newAccount.$id,
       name: newAccount.name,
       email: newAccount.email,
       username: user.username,
       imageUrl: avatarUrl,
-    });
+      bio: '', // Add required bio field
+    };
 
+    console.log('Creating user document with data:', userDocumentData);
+
+    const newUser = await saveUserToDB(userDocumentData);
+
+    console.log('User creation process completed successfully');
     return newUser;
   } catch (error) {
-    console.log(error);
-    return error;
+    console.error('Create user account error:', error);
+    throw error;
   }
 }
 
@@ -50,8 +71,11 @@ export async function saveUserToDB(user: {
   name: string;
   imageUrl: URL | string;
   username?: string;
+  bio?: string;
 }) {
   try {
+    console.log('Attempting to save user to DB:', user);
+    
     const newUser = await databases.createDocument(
       appwriteConfig.databaseId,
       appwriteConfig.userCollectionId,
@@ -59,9 +83,14 @@ export async function saveUserToDB(user: {
       user
     );
 
+    console.log('Successfully saved user to DB:', newUser);
     return newUser;
   } catch (error) {
-    console.log(error);
+    console.error('Save user to DB error:', error);
+    console.error('User data that failed:', user);
+    console.error('Database ID:', appwriteConfig.databaseId);
+    console.error('User Collection ID:', appwriteConfig.userCollectionId);
+    throw error;
   }
 }
 
@@ -74,10 +103,18 @@ export async function signInAccount(user: { email: string; password: string }) {
       return devSignInAccount(user);
     }
 
+    // Clear any existing session
+    await deleteCurrentSession();
+
     const session = await account.createEmailSession(user.email, user.password);
+    
+    // Set session data in localStorage
+    setSessionData();
+    
     return session;
   } catch (error) {
-    console.log(error);
+    console.error('Sign in error:', error);
+    throw error;
   }
 }
 
@@ -85,10 +122,14 @@ export async function signInAccount(user: { email: string; password: string }) {
 export async function getAccount() {
   try {
     const currentAccount = await account.get();
-
     return currentAccount;
-  } catch (error) {
-    console.log(error);
+  } catch (error: any) {
+    // If it's a 401 (Unauthorized) or session-related error, return null instead of throwing
+    if (error?.code === 401 || error?.message?.includes('missing scope')) {
+      return null;
+    }
+    console.error('Get account error:', error);
+    throw error;
   }
 }
 
@@ -102,8 +143,10 @@ export async function getCurrentUser() {
     }
 
     const currentAccount = await getAccount();
-
-    if (!currentAccount) throw Error;
+    if (!currentAccount) {
+      // No authenticated session, return null
+      return null;
+    }
 
     const currentUser = await databases.listDocuments(
       appwriteConfig.databaseId,
@@ -111,11 +154,41 @@ export async function getCurrentUser() {
       [Query.equal("accountId", currentAccount.$id)]
     );
 
-    if (!currentUser) throw Error;
+    if (!currentUser || currentUser.documents.length === 0) {
+      // User document doesn't exist, create it
+      console.log('No user document found, creating one for account:', currentAccount.$id);
+      
+      const avatarUrl = avatars.getInitials(currentAccount.name);
+      
+      const userDocumentData = {
+        accountId: currentAccount.$id,
+        name: currentAccount.name,
+        email: currentAccount.email,
+        username: currentAccount.email.split('@')[0], // Use email prefix as username
+        imageUrl: avatarUrl,
+        bio: '',
+      };
+      
+      console.log('Creating user document with data:', userDocumentData);
+      
+      const newUserDocument = await databases.createDocument(
+        appwriteConfig.databaseId,
+        appwriteConfig.userCollectionId,
+        ID.unique(),
+        userDocumentData
+      );
+      
+      console.log('User document created successfully:', newUserDocument);
+      return newUserDocument;
+    }
 
     return currentUser.documents[0];
-  } catch (error) {
-    console.log(error);
+  } catch (error: any) {
+    // If it's a session-related error, return null instead of throwing
+    if (error?.code === 401 || error?.message?.includes('missing scope')) {
+      return null;
+    }
+    console.error('Get current user error:', error);
     return null;
   }
 }
@@ -130,10 +203,14 @@ export async function signOutAccount() {
     }
 
     const session = await account.deleteSession("current");
-
+    
+    // Clear session data from localStorage
+    clearSessionData();
+    
     return session;
   } catch (error) {
-    console.log(error);
+    console.error('Sign out error:', error);
+    throw error;
   }
 }
 
@@ -168,7 +245,7 @@ export async function createPost(post: INewPost) {
         creator: post.userId,
         caption: post.caption,
         imageUrl: fileUrl,
-        imageId: uploadedFile.$id,
+        // imageId: uploadedFile.$id, // Temporarily removed until schema is updated
         location: post.location,
         tags: tags,
       }
@@ -331,7 +408,7 @@ export async function updatePost(post: IUpdatePost) {
       {
         caption: post.caption,
         imageUrl: image.imageUrl,
-        imageId: image.imageId,
+        // imageId: image.imageId, // Temporarily removed until schema is updated
         location: post.location,
         tags: tags,
       }
@@ -361,7 +438,7 @@ export async function updatePost(post: IUpdatePost) {
 
 // ============================== DELETE POST
 export async function deletePost(postId?: string, imageId?: string) {
-  if (!postId || !imageId) return;
+  if (!postId) return;
 
   try {
     const statusCode = await databases.deleteDocument(
@@ -372,7 +449,10 @@ export async function deletePost(postId?: string, imageId?: string) {
 
     if (!statusCode) throw Error;
 
-    await deleteFile(imageId);
+    // Only delete file if imageId is provided
+    if (imageId) {
+      await deleteFile(imageId);
+    }
 
     return { status: "Ok" };
   } catch (error) {

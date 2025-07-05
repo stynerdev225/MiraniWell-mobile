@@ -69,11 +69,7 @@ const LeftSidebar = () => {
               ? 'bg-gradient-to-r from-primary-500/20 to-primary-600/20 border border-primary-500/30 shadow-lg shadow-primary-500/20 translate-x-1'
               : 'hover:border border-transparent hover:border-primary-500/20'
             }`
-          }
-          onClick={() => {
-            console.log('NavLink clicked:', link.label, 'to:', link.route);
-            // Let NavLink handle the navigation naturally
-          }}>
+          }>
 
           {/* Active indicator */}
           {isActive && (
@@ -263,13 +259,13 @@ const LeftSidebar = () => {
         <div className="p-3 border-t border-dark-4/50">
           <Button
             variant="ghost"
-            className="w-full nav-link-enhanced gap-3 bg-gradient-to-r from-red-500/10 to-red-600/10 border border-red-500/20 hover:from-red-500/20 hover:to-red-600/20 hover:border-red-500/40 hover:shadow-lg hover:shadow-red-500/20 transition-all duration-300 group relative"
+            className="w-full nav-link-enhanced gap-3 bg-gradient-to-r from-red-500/10 to-red-600/10 border border-red-500/20 hover:from-red-500/20 hover:to-red-600/20 hover:border-red-500/40 hover:shadow-lg hover:shadow-red-500/20 transition-all duration-300 group relative active:scale-95"
             onClick={(e) => handleSignOut(e)}>
 
             <div className="p-2 rounded-lg bg-red-500/20 group-hover:bg-red-500/30 transition-all duration-300">
               <img src="/assets/icons/logout.svg" alt="logout" width={18} height={18} className="group-hover:scale-110 transition-all duration-300" />
             </div>
-            <span className="base-medium text-light-1 group-hover:text-red-400 transition-all duration-300 font-medium sidebar-text">Logout</span>
+            <span className="base-medium text-light-1 group-hover:text-red-400 group-active:text-light-1 transition-all duration-300 font-medium sidebar-text">Logout</span>
 
             {/* Hover glow effect */}
             <div className="absolute inset-0 bg-gradient-to-r from-red-500/5 to-red-600/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl"></div>

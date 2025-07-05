@@ -5,6 +5,16 @@ export const sidebarLinks = [
     label: "Home",
   },
   {
+    imgURL: "/assets/icons/course.svg",
+    route: "/dashboard",
+    label: "Dashboard",
+  },
+  {
+    imgURL: "/assets/icons/people.svg",
+    route: "/community",
+    label: "Community",
+  },
+  {
     imgURL: "/assets/icons/yoga_7607959 Background Removed.png",
     route: "/mind-body-spirit",
     label: "Mind Body Spirit",

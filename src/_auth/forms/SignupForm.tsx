@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import Loader from "@/components/shared/Loader";
 import { useToast } from "@/components/ui/use-toast";
 
-import { useCreateUserAccount, useSignInAccount } from "@/lib/react-query/queries";
+import { useCreateUserAccount } from "@/lib/react-query/queries";
 import { SignupValidation } from "@/lib/validation";
 import { useUserContext } from "@/context/AuthContext";
 
@@ -29,53 +29,48 @@ const SignupForm = () => {
   });
 
   // Queries
-  const { mutateAsync: createUserAccount, isLoading: isCreatingAccount } = useCreateUserAccount();
-  const { mutateAsync: signInAccount, isLoading: isSigningInUser } = useSignInAccount();
-
-  // Handler
+  const { mutateAsync: createUserAccount, isLoading: isCreatingAccount } = useCreateUserAccount();  // Handler
   const handleSignup = async (user: z.infer<typeof SignupValidation>) => {
     try {
       const newUser = await createUserAccount(user);
 
       if (!newUser) {
         toast({ title: "Sign up failed. Please try again.", });
-
         return;
       }
 
-      const session = await signInAccount({
-        email: user.email,
-        password: user.password,
-      });
-
-      if (!session) {
-        toast({ title: "Something went wrong. Please login your new account", });
-
-        navigate("/sign-in");
-
-        return;
-      }
-
+      // No need to sign in again since createUserAccount now handles it
       const isLoggedIn = await checkAuthUser();
 
       if (isLoggedIn) {
         form.reset();
-
         navigate("/");
       } else {
-        toast({ title: "Login failed. Please try again.", });
-
-        return;
+        toast({ title: "Account created but login failed. Please sign in manually.", });
+        navigate("/sign-in");
       }
-    } catch (error) {
-      console.log({ error });
+    } catch (error: any) {
+      console.error('Signup error:', error);
+
+      // Handle specific error cases
+      if (error?.code === 409) {
+        toast({ title: "User already exists. Please try signing in instead.", });
+        navigate("/sign-in");
+      } else if (error?.message?.includes('user') && error?.message?.includes('exists')) {
+        toast({ title: "User already exists. Please try signing in instead.", });
+        navigate("/sign-in");
+      } else if (error?.message?.includes('not authorized')) {
+        toast({ title: "Permission error. Please contact support.", });
+      } else {
+        toast({ title: "Sign up failed. Please try again.", });
+      }
     }
   };
 
   return (
     <Form {...form}>
-      <div className="sm:w-420 flex-center flex-col">
-        <img src="/assets/images/Mirani-Well-Logo.png" alt="Mirani Well logo" />
+      <div className="w-full max-w-md sm:w-420 flex-center flex-col px-4">
+        <img src="/assets/images/Mirani-Well-Logo.png" alt="Mirani Well logo" className="w-full max-w-[280px] h-auto" />
 
         <h2 className="h3-bold md:h2-bold pt-5 sm:pt-12">
           Create a new account
@@ -144,7 +139,7 @@ const SignupForm = () => {
           />
 
           <Button type="submit" className="shad-button_primary">
-            {isCreatingAccount || isSigningInUser || isUserLoading ? (
+            {isCreatingAccount || isUserLoading ? (
               <div className="flex-center gap-2">
                 <Loader /> Loading...
               </div>

@@ -31,31 +31,41 @@ const SigninForm = () => {
   });
 
   const handleSignin = async (user: z.infer<typeof SigninValidation>) => {
-    const session = await signInAccount(user);
+    try {
+      const session = await signInAccount(user);
 
-    if (!session) {
-      toast({ title: "Login failed. Please try again." });
+      if (!session) {
+        toast({ title: "Login failed. Please try again." });
+        return;
+      }
 
-      return;
-    }
+      const isLoggedIn = await checkAuthUser();
 
-    const isLoggedIn = await checkAuthUser();
+      if (isLoggedIn) {
+        form.reset();
+        navigate("/");
+      } else {
+        toast({ title: "Login failed. Please try again." });
+        return;
+      }
+    } catch (error: any) {
+      console.error('Signin error:', error);
 
-    if (isLoggedIn) {
-      form.reset();
-
-      navigate("/");
-    } else {
-      toast({ title: "Login failed. Please try again.", });
-
-      return;
+      // Handle specific error cases
+      if (error?.code === 401) {
+        toast({ title: "Invalid email or password. Please try again." });
+      } else if (error?.message?.includes('Invalid credentials')) {
+        toast({ title: "Invalid email or password. Please try again." });
+      } else {
+        toast({ title: "Login failed. Please try again." });
+      }
     }
   };
 
   return (
     <Form {...form}>
-      <div className="sm:w-420 flex-center flex-col">
-        <img src="/assets/images/Mirani-Well-Logo.png" alt="Mirani Well logo" />
+      <div className="w-full max-w-md sm:w-420 flex-center flex-col px-4">
+        <img src="/assets/images/Mirani-Well-Logo.png" alt="Mirani Well logo" className="w-full max-w-[280px] h-auto" />
 
         <h2 className="h3-bold md:h2-bold pt-5 sm:pt-12">
           Log in to your account
