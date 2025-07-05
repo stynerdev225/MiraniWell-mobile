@@ -228,6 +228,65 @@ export const mobileDebug = {
   }
 };
 
+// Additional mobile debugging functions
+export const debugMobile = {
+  // Network connectivity test
+  testNetworkConnectivity: async () => {
+    console.log('📱 Testing network connectivity...');
+    const results = {
+      online: navigator.onLine,
+      connection: (navigator as any).connection,
+      appwriteEndpoint: '',
+      appwriteProject: '',
+      envVarsStatus: {}
+    };
+    
+    // Test Appwrite endpoint
+    try {
+      const response = await fetch('https://cloud.appwrite.io/v1/health');
+      results.appwriteEndpoint = response.ok ? 'Connected' : 'Failed';
+    } catch (error) {
+      results.appwriteEndpoint = 'Network Error';
+    }
+    
+    // Check environment variables
+    results.envVarsStatus = {
+      VITE_APPWRITE_URL: !!import.meta.env.VITE_APPWRITE_URL,
+      VITE_APPWRITE_PROJECT_ID: !!import.meta.env.VITE_APPWRITE_PROJECT_ID,
+      VITE_USE_MOCK_DATA: import.meta.env.VITE_USE_MOCK_DATA,
+      PROJECT_ID_VALUE: import.meta.env.VITE_APPWRITE_PROJECT_ID || 'NOT SET'
+    };
+    
+    console.log('📱 Network test results:', results);
+    return results;
+  },
+  
+  // Comprehensive system info
+  getSystemInfo: () => {
+    const info = {
+      userAgent: navigator.userAgent,
+      platform: navigator.platform,
+      language: navigator.language,
+      cookieEnabled: navigator.cookieEnabled,
+      onLine: navigator.onLine,
+      storage: {
+        localStorage: !!window.localStorage,
+        sessionStorage: !!window.sessionStorage,
+        localStorageItems: localStorage.length,
+        sessionStorageItems: sessionStorage.length
+      },
+      appwrite: {
+        url: import.meta.env.VITE_APPWRITE_URL || 'NOT SET',
+        projectId: import.meta.env.VITE_APPWRITE_PROJECT_ID || 'NOT SET',
+        mockMode: import.meta.env.VITE_USE_MOCK_DATA === 'true'
+      }
+    };
+    
+    console.log('📱 System info:', info);
+    return info;
+  }
+};
+
 // Auto-initialize debugging in development
 if (process.env.NODE_ENV === 'development') {
   console.log('🔧 Mobile Debug Mode Enabled');

@@ -29,10 +29,30 @@ try {
   client.setProject(appwriteConfig.projectId);
   console.log("Appwrite client configured with:", { 
     url: appwriteConfig.url,
-    projectId: appwriteConfig.projectId
+    projectId: appwriteConfig.projectId,
+    isDevelopment: import.meta.env.DEV,
+    hasProjectId: !!import.meta.env.VITE_APPWRITE_PROJECT_ID,
+    hasUrl: !!import.meta.env.VITE_APPWRITE_URL
   });
+  
+  // Enhanced debugging for network issues
+  if (appwriteConfig.projectId === 'mock_project_id') {
+    console.warn('🚨 WARNING: Using mock project ID. Check Vercel environment variables!');
+    console.warn('🔧 Expected environment variables:', {
+      VITE_APPWRITE_URL: import.meta.env.VITE_APPWRITE_URL,
+      VITE_APPWRITE_PROJECT_ID: import.meta.env.VITE_APPWRITE_PROJECT_ID,
+      VITE_USE_MOCK_DATA: import.meta.env.VITE_USE_MOCK_DATA
+    });
+  }
 } catch (error) {
   console.error("Failed to configure Appwrite client:", error);
+  // Log detailed error information
+  console.error("Configuration details:", {
+    url: appwriteConfig.url,
+    projectId: appwriteConfig.projectId,
+    environment: import.meta.env.NODE_ENV,
+    allEnvVars: Object.keys(import.meta.env).filter(key => key.startsWith('VITE_'))
+  });
 }
 
 export const account = new Account(client);
