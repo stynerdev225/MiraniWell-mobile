@@ -1,2 +1,4 @@
 # Disable markdown linting for documentation files
-*.md
+APPWRITE_SETUP_GUIDE.md
+CLIENT_OVERVIEW.md
+EXECUTIVE_SUMMARY.md
