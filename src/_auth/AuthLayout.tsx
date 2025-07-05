@@ -10,8 +10,8 @@ export default function AuthLayout() {
       {isAuthenticated ? (
         <Navigate to="/" />
       ) : (
-        <>
-          <section className="flex flex-1 justify-center items-center flex-col py-10 px-4">
+        <div className="mobile-form-wrapper">
+          <section className="flex flex-1 justify-center items-center flex-col py-10 px-4 mobile-form-content">
             <Outlet />
           </section>
 
@@ -20,7 +20,7 @@ export default function AuthLayout() {
             alt="Mirani Well background"
             className="hidden xl:block h-screen w-1/2 object-cover bg-no-repeat"
           />
-        </>
+        </div>
       )}
     </>
   );

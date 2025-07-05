@@ -9,6 +9,7 @@ import {
   EditPost,
   PostDetails,
   UpdateProfile,
+  ProfileSettings,
   AllUsers,
   MindBodySpirit,
   MockCheckout,
@@ -50,6 +51,7 @@ const App = () => {
           <Route path="/posts/:id" element={<PostDetails />} />
           <Route path="/profile/:id/*" element={<Profile />} />
           <Route path="/update-profile/:id" element={<UpdateProfile />} />
+          <Route path="/profile-settings" element={<ProfileSettings />} />
           <Route path="/mind-body-spirit" element={<MindBodySpirit />} />
           <Route path="/mock-checkout" element={<MockCheckout />} />
           <Route path="/dashboard" element={<Dashboard />} />

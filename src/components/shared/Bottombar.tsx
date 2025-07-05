@@ -21,8 +21,7 @@ const Bottombar = () => {
                 alt={link.label}
                 width={20}
                 height={20}
-                className="object-contain"
-                style={{ minWidth: '20px' }}
+                className="object-contain bottombar-icon-large"
               />
             ) : (
               <img
@@ -30,8 +29,7 @@ const Bottombar = () => {
                 alt={link.label}
                 width={16}
                 height={16}
-                className={isActive ? "invert-white" : ""}
-                style={{ minWidth: '16px' }}
+                className={`bottombar-icon-small ${isActive ? "invert-white" : ""}`}
               />
             )}
 

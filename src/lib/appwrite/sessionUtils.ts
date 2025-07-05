@@ -34,3 +34,35 @@ export function clearSessionData() {
 export function setSessionData() {
   localStorage.setItem("cookieFallback", JSON.stringify(["session"]));
 }
+
+// Check if session is valid and not expired
+export async function validateSession() {
+  try {
+    const session = await account.getSession('current');
+    if (session) {
+      // Check if session is still valid by making a simple authenticated request
+      await account.get();
+      return true;
+    }
+    return false;
+  } catch (error: any) {
+    console.log('Session validation failed:', error);
+    // If 401 or session-related error, session is invalid
+    if (error?.code === 401 || error?.message?.includes('missing scope') || error?.message?.includes('Unauthorized')) {
+      return false;
+    }
+    return false;
+  }
+}
+
+// Check if error is a session-related error (401, unauthorized, etc.)
+export function isSessionError(error: any): boolean {
+  return (
+    error?.code === 401 ||
+    error?.status === 401 ||
+    error?.message?.includes('missing scope') ||
+    error?.message?.includes('Unauthorized') ||
+    error?.message?.includes('Invalid session') ||
+    error?.message?.includes('Session not found')
+  );
+}

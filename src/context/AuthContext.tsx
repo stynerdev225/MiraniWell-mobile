@@ -1,9 +1,10 @@
 import { useNavigate } from "react-router-dom";
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState, useCallback } from "react";
 
 import { IUser } from "@/types";
 import { getCurrentUser } from "@/lib/appwrite/api";
 import { displayDevModeBanner, isDevelopment } from "@/lib/appwrite/devUtils";
+import { clearSessionData, isSessionError } from "@/lib/appwrite/sessionUtils";
 // import { debugDatabase } from "@/lib/appwrite/debugUtils";
 // import { createMissingUserDocument, clearAllSessions } from "@/lib/appwrite/fixUtils";
 import { fixExistingUser } from "@/lib/appwrite/fixExistingUser";
@@ -25,6 +26,7 @@ const INITIAL_STATE = {
   setUser: () => { },
   setIsAuthenticated: () => { },
   checkAuthUser: async () => false as boolean,
+  handleSessionExpired: () => { },
 };
 
 type IContextType = {
@@ -35,6 +37,7 @@ type IContextType = {
   isAuthenticated: boolean;
   setIsAuthenticated: React.Dispatch<React.SetStateAction<boolean>>;
   checkAuthUser: () => Promise<boolean>;
+  handleSessionExpired: () => void;
 };
 
 const AuthContext = createContext<IContextType>(INITIAL_STATE);
@@ -71,8 +74,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setIsAuthenticated(false);
       setUser(INITIAL_USER);
       return false;
-    } catch (error) {
+    } catch (error: any) {
       console.error('Auth check error:', error);
+
+      // Check if it's a session error
+      if (isSessionError(error)) {
+        console.log('Session expired, clearing auth state');
+        handleSessionExpired();
+      }
+
       setIsAuthenticated(false);
       setUser(INITIAL_USER);
       return false;
@@ -84,6 +94,22 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
     }
   };
+
+  const handleSessionExpired = useCallback(() => {
+    console.log('Handling session expiration');
+
+    // Clear session data
+    clearSessionData();
+
+    // Reset auth state
+    setIsAuthenticated(false);
+    setUser(INITIAL_USER);
+
+    // Redirect to sign-in if not already there
+    if (!window.location.pathname.includes('/sign-in') && !window.location.pathname.includes('/sign-up')) {
+      navigate('/sign-in');
+    }
+  }, [navigate]);
 
   useEffect(() => {
     const cookieFallback = localStorage.getItem("cookieFallback");
@@ -125,6 +151,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     isAuthenticated,
     setIsAuthenticated,
     checkAuthUser,
+    handleSessionExpired,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

@@ -48,7 +48,7 @@ const Topbar = () => {
             <div className="absolute top-12 left-0 bg-dark-2 border border-dark-4 rounded-xl shadow-lg p-3 min-w-[180px] z-50 animate-fade-in">
               <div className="space-y-2">
                 <Link
-                  to={`/profile/${user.id}`}
+                  to="/profile-settings"
                   className="flex items-center gap-3 p-3 hover:bg-primary-500/10 rounded-lg transition-all duration-300 group"
                   onClick={() => setShowMobileMenu(false)}>
                   <div className="w-8 h-8 bg-primary-500/20 rounded-lg flex items-center justify-center group-hover:bg-primary-500/30 transition-all">
@@ -96,20 +96,25 @@ const Topbar = () => {
         </div>
 
         <div className="flex gap-4 items-center relative z-10">
-          {/* Desktop Logout Button - Hidden on mobile */}
-          <Button
-            variant="ghost"
-            className="hidden md:flex shad-button_ghost rounded-full w-10 h-10 items-center justify-center glass-effect-light hover:bg-dark-3/50 transition-all duration-300 group"
-            onClick={() => signOut()}>
-            <img
-              src="/assets/icons/logout.svg"
-              alt="logout"
-              className="w-4 h-4 group-hover:scale-110 transition-all duration-300"
-            />
-          </Button>
+          {/* Desktop Logout Button - Completely hidden on mobile */}
+          <div className="hidden md:block mobile-hide-logout">
+            <Button
+              variant="ghost"
+              className="shad-button_ghost rounded-full w-10 h-10 flex items-center justify-center glass-effect-light hover:bg-dark-3/50 transition-all duration-300 group"
+              onClick={() => signOut()}>
+              <img
+                src="/assets/icons/logout.svg"
+                alt="logout"
+                className="w-4 h-4 group-hover:scale-110 transition-all duration-300"
+              />
+            </Button>
+          </div>
 
-          {/* Profile Icon - Mobile: Only profile icon, Desktop: normal */}
-          <Link to={`/profile/${user.id}`} className="flex-center gap-3 group relative">
+          {/* Single Profile Icon - Mobile: Goes to Profile Settings, Desktop: Goes to Profile Page */}
+          <Link
+            to="/profile-settings"
+            className="flex-center gap-3 group relative"
+          >
             <div className="relative">
               <div className="absolute -inset-0.5 rounded-full animate-pulse-subtle bg-gradient-to-r from-primary-500 to-accent-1 opacity-60 blur-sm"></div>
               <img
@@ -120,9 +125,9 @@ const Topbar = () => {
               <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-dark-2 z-20 shadow-md animate-pulse"></span>
             </div>
 
-            {/* Desktop hint text - Hidden on mobile */}
+            {/* Desktop hint text */}
             <span className="hidden md:block text-xs text-light-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300 absolute -bottom-7 left-1/2 transform -translate-x-1/2 whitespace-nowrap bg-dark-3 px-2 py-1 rounded-md">
-              View Profile
+              Profile Settings
             </span>
           </Link>
         </div>

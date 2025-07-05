@@ -3,7 +3,8 @@ import { ID, Query } from "appwrite";
 import { appwriteConfig, account, databases, storage, avatars } from "./config";
 import { IUpdatePost, INewPost, INewUser, IUpdateUser } from "@/types";
 import { isDevelopment } from "./devUtils";
-import { deleteCurrentSession, setSessionData, clearSessionData } from "./sessionUtils";
+import { deleteCurrentSession, setSessionData, clearSessionData, isSessionError } from "./sessionUtils";
+import { mobileSessionFix } from "./mobileSessionFix";
 
 // ============================================================
 // AUTH
@@ -23,19 +24,36 @@ export async function createUserAccount(user: INewUser) {
     // Clear any existing session
     await deleteCurrentSession();
 
-    const newAccount = await account.create(
-      ID.unique(),
-      user.email,
-      user.password,
-      user.name
-    );
+    // Use mobile-specific account creation for mobile devices
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    
+    let newAccount;
+    if (isMobile) {
+      console.log('Using mobile-specific account creation');
+      newAccount = await mobileSessionFix.mobileCreateAccount(user.email, user.password, user.name);
+    } else {
+      console.log('Using standard account creation');
+      newAccount = await account.create(
+        ID.unique(),
+        user.email,
+        user.password,
+        user.name
+      );
+    }
 
     if (!newAccount) throw new Error('Failed to create account');
 
     console.log('Account created successfully:', newAccount.$id);
 
     // Immediately sign in the new user to get proper session
-    const session = await account.createEmailSession(user.email, user.password);
+    let session;
+    if (isMobile) {
+      console.log('Using mobile-specific login for new account');
+      session = await mobileSessionFix.mobileLogin(user.email, user.password);
+    } else {
+      console.log('Using standard login for new account');
+      session = await account.createEmailSession(user.email, user.password);
+    }
     console.log('Session created for new user:', session.$id);
 
     // Set session data in localStorage
@@ -103,17 +121,75 @@ export async function signInAccount(user: { email: string; password: string }) {
       return devSignInAccount(user);
     }
 
+    console.log('🔐 Starting sign in process for:', user.email);
+    console.log('🔐 Using Appwrite endpoint:', appwriteConfig.url);
+    console.log('🔐 Project ID:', appwriteConfig.projectId);
+
     // Clear any existing session
     await deleteCurrentSession();
 
-    const session = await account.createEmailSession(user.email, user.password);
+    // Mobile-specific debugging
+    if (typeof window !== 'undefined') {
+      console.log('🔐 Network status:', {
+        online: navigator.onLine,
+        cookieEnabled: navigator.cookieEnabled,
+        userAgent: navigator.userAgent.substring(0, 100),
+        href: window.location.href
+      });
+    }
+
+    // Use mobile-specific login for mobile devices
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    
+    let session;
+    if (isMobile) {
+      console.log('🔐 Using mobile-specific login');
+      session = await mobileSessionFix.mobileLogin(user.email, user.password);
+    } else {
+      console.log('🔐 Using standard login');
+      session = await account.createEmailSession(user.email, user.password);
+    }
+    
+    console.log('🔐 Session created successfully:', session.$id);
     
     // Set session data in localStorage
     setSessionData();
+    console.log('🔐 Session data set in localStorage');
     
     return session;
-  } catch (error) {
-    console.error('Sign in error:', error);
+  } catch (error: any) {
+    console.error('🔐 Sign in error:', error);
+    
+    // Log detailed error information for mobile debugging
+    console.log('🔐 Detailed error info:', {
+      name: error?.name,
+      message: error?.message,
+      code: error?.code,
+      type: error?.type,
+      response: error?.response,
+      stack: error?.stack?.substring(0, 200)
+    });
+
+    // Check if it's a network-related error
+    if (error?.name === 'NetworkError' || 
+        error?.message?.includes('fetch') || 
+        error?.message?.includes('network') ||
+        error?.message?.includes('Failed to fetch')) {
+      console.log('🔐 Network error detected during sign in');
+      const networkError = new Error('Network error during sign in');
+      networkError.name = 'NetworkError';
+      throw networkError;
+    }
+
+    // Check if it's a CORS error
+    if (error?.message?.includes('cors') || 
+        error?.message?.includes('Access-Control-Allow-Origin')) {
+      console.log('🔐 CORS error detected during sign in');
+      const corsError = new Error('CORS error during sign in');
+      corsError.name = 'CORSError';
+      throw corsError;
+    }
+
     throw error;
   }
 }
@@ -124,12 +200,15 @@ export async function getAccount() {
     const currentAccount = await account.get();
     return currentAccount;
   } catch (error: any) {
-    // If it's a 401 (Unauthorized) or session-related error, return null instead of throwing
-    if (error?.code === 401 || error?.message?.includes('missing scope')) {
+    console.log('Get account error:', error);
+    // If it's a session-related error, clear session data and return null
+    if (isSessionError(error)) {
+      console.log('Session error detected, clearing session data');
+      clearSessionData();
       return null;
     }
-    console.error('Get account error:', error);
-    throw error;
+    // For other errors, still return null to avoid breaking the app
+    return null;
   }
 }
 
@@ -184,11 +263,14 @@ export async function getCurrentUser() {
 
     return currentUser.documents[0];
   } catch (error: any) {
-    // If it's a session-related error, return null instead of throwing
-    if (error?.code === 401 || error?.message?.includes('missing scope')) {
+    console.log('Get current user error:', error);
+    // If it's a session-related error, clear session data and return null
+    if (isSessionError(error)) {
+      console.log('Session error detected in getCurrentUser, clearing session data');
+      clearSessionData();
       return null;
     }
-    console.error('Get current user error:', error);
+    // For other errors, still return null to avoid breaking the app
     return null;
   }
 }
@@ -680,5 +762,33 @@ export async function updateUser(user: IUpdateUser) {
     return updatedUser;
   } catch (error) {
     console.log(error);
+  }
+}
+
+// ============================== NETWORK CONNECTIVITY CHECK
+export async function checkNetworkConnectivity() {
+  try {
+    console.log('🌐 Testing network connectivity...');
+    
+    // Test basic connectivity
+    const response = await fetch(appwriteConfig.url + '/health', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    
+    console.log('🌐 Network test response:', response.status);
+    
+    if (response.ok) {
+      console.log('🌐 Network connectivity: OK');
+      return true;
+    } else {
+      console.log('🌐 Network connectivity: Failed -', response.status);
+      return false;
+    }
+  } catch (error) {
+    console.error('🌐 Network connectivity test failed:', error);
+    return false;
   }
 }

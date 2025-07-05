@@ -3,7 +3,6 @@ import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
 import { INavLink } from "@/types";
 import { sidebarLinks } from "@/constants";
 import { Loader } from "@/components/shared";
-import { Button } from "@/components/ui/button";
 import { useSignOutAccount } from "@/lib/react-query/queries";
 import { useUserContext, INITIAL_USER } from "@/context/AuthContext";
 import { Home, Users, Sparkles, ChevronRight, Star, Activity } from "lucide-react";
@@ -121,7 +120,7 @@ const LeftSidebar = () => {
   };
 
   return (
-    <nav className="leftsidebar bg-gradient-to-b from-dark-2 via-dark-2 to-dark-1 border-r border-dark-4/50 backdrop-blur-sm relative overflow-hidden z-50">
+    <nav className="leftsidebar hidden md:flex bg-gradient-to-b from-dark-2 via-dark-2 to-dark-1 border-r border-dark-4/50 backdrop-blur-sm relative overflow-hidden z-50">
       {/* Animated background pattern */}
       <div className="absolute inset-0 opacity-5 pointer-events-none">
         <div className="absolute inset-0 bg-[radial-gradient(#9D6EF9_1px,transparent_1px)] [background-size:20px_20px] animate-pulse-subtle"></div>
@@ -255,21 +254,19 @@ const LeftSidebar = () => {
           </div>
         </div>
 
-        {/* Logout Button */}
-        <div className="p-3 border-t border-dark-4/50">
-          <Button
-            variant="ghost"
-            className="w-full nav-link-enhanced gap-3 bg-gradient-to-r from-red-500/10 to-red-600/10 border border-red-500/20 hover:from-red-500/20 hover:to-red-600/20 hover:border-red-500/40 hover:shadow-lg hover:shadow-red-500/20 transition-all duration-300 group relative active:scale-95"
-            onClick={(e) => handleSignOut(e)}>
+        {/* Logout Button - Hidden on mobile */}
+        <div className="p-3 border-t border-dark-4/50 mobile-hide-logout">
+          <button
+            onClick={(e) => handleSignOut(e)}
+            className="logout-button-fixed w-full flex items-center gap-3 p-3 rounded-xl bg-gradient-to-r from-red-500/10 to-red-600/10 border border-red-500/20 active:scale-95">
 
-            <div className="p-2 rounded-lg bg-red-500/20 group-hover:bg-red-500/30 transition-all duration-300">
-              <img src="/assets/icons/logout.svg" alt="logout" width={18} height={18} className="group-hover:scale-110 transition-all duration-300" />
+            <div className="p-2 rounded-lg bg-red-500/20">
+              <img src="/assets/icons/logout.svg" alt="logout" width={18} height={18} />
             </div>
-            <span className="base-medium text-light-1 group-hover:text-red-400 group-active:text-light-1 transition-all duration-300 font-medium sidebar-text">Logout</span>
-
-            {/* Hover glow effect */}
-            <div className="absolute inset-0 bg-gradient-to-r from-red-500/5 to-red-600/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl"></div>
-          </Button>
+            <span className="logout-text-fixed base-medium font-medium">
+              Logout
+            </span>
+          </button>
         </div>
       </div>
     </nav>

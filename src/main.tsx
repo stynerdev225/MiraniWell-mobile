@@ -7,6 +7,11 @@ import { QueryProvider } from "@/lib/react-query/QueryProvider";
 
 import App from "./App";
 
+// Import mobile debug button for development
+if (import.meta.env.DEV) {
+  import("@/lib/mobileDebugButton");
+}
+
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <BrowserRouter>

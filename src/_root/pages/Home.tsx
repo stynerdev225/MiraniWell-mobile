@@ -2,6 +2,7 @@ import { Models } from "appwrite";
 import { Link } from "react-router-dom";
 import { Loader, PostCard, UserCard } from "@/components/shared";
 import { useGetRecentPosts, useGetUsers, useGetCurrentUser } from "@/lib/react-query/queries";
+import { useErrorHandler } from "@/hooks/useErrorHandler";
 import {
   Heart,
   Sparkles,
@@ -27,17 +28,28 @@ type PostType = Models.Document & {
 };
 
 const Home = () => {
+  const { handleQueryError } = useErrorHandler();
   const { data: currentUser } = useGetCurrentUser();
   const {
     data: posts,
     isLoading: isPostLoading,
     isError: isErrorPosts,
+    error: postsError,
   } = useGetRecentPosts();
   const {
     data: creators,
     isLoading: isUserLoading,
     isError: isErrorCreators,
+    error: creatorsError,
   } = useGetUsers(6);
+
+  // Handle errors
+  if (isErrorPosts && postsError) {
+    handleQueryError(postsError);
+  }
+  if (isErrorCreators && creatorsError) {
+    handleQueryError(creatorsError);
+  }
 
   // Get current time for dynamic greeting
   const currentHour = new Date().getHours();

@@ -13,6 +13,8 @@ import { SigninValidation } from "@/lib/validation";
 import { useSignInAccount } from "@/lib/react-query/queries";
 import { useUserContext } from "@/context/AuthContext";
 import { isDevelopment } from "@/lib/appwrite/devUtils";
+import { checkNetworkConnectivity } from "@/lib/appwrite/api";
+import mobileDebug from "@/lib/mobileDebug";
 
 const SigninForm = () => {
   const { toast } = useToast();
@@ -32,30 +34,89 @@ const SigninForm = () => {
 
   const handleSignin = async (user: z.infer<typeof SigninValidation>) => {
     try {
+      // Performance monitoring
+      const perfMonitor = mobileDebug.monitorPerformance();
+      perfMonitor.mark('login-start');
+
+      console.log('📱 Signin attempt:', {
+        email: user.email,
+        timestamp: new Date().toISOString(),
+        userAgent: navigator.userAgent,
+        isMobile: mobileDebug.isMobile(),
+        isIOS: mobileDebug.isIOS(),
+        isAndroid: mobileDebug.isAndroid(),
+        networkType: (navigator as any).connection?.effectiveType || 'unknown'
+      });
+
+      // Log device information in development
+      if (isDevelopment) {
+        mobileDebug.logDeviceInfo();
+        mobileDebug.checkNetworkStatus();
+      }
+
+      // Add mobile-specific timeout and retry logic
+      const isMobile = mobileDebug.isMobile();
+      const timeout = isMobile ? 15000 : 10000; // Longer timeout for mobile
+
+      // Test network connectivity first with timeout
+      const connectivityPromise = checkNetworkConnectivity();
+      const timeoutPromise = new Promise((_, reject) =>
+        setTimeout(() => reject(new Error('Network timeout')), timeout)
+      );
+
+      const isConnected = await Promise.race([connectivityPromise, timeoutPromise]);
+      console.log('📱 Network connectivity test:', isConnected);
+
+      if (!isConnected) {
+        toast({ title: "Network error. Please check your connection and try again." });
+        return;
+      }
+
       const session = await signInAccount(user);
+      console.log('📱 Session result:', session ? 'Success' : 'Failed');
+      console.log('📱 Session details:', session);
 
       if (!session) {
+        console.log('📱 No session returned');
         toast({ title: "Login failed. Please try again." });
         return;
       }
 
       const isLoggedIn = await checkAuthUser();
+      console.log('📱 Auth check result:', isLoggedIn);
 
       if (isLoggedIn) {
         form.reset();
+        perfMonitor.mark('login-end');
+        perfMonitor.measure('login-duration', 'login-start', 'login-end');
+        console.log('📱 Navigating to home...');
         navigate("/");
       } else {
+        console.log('📱 Auth check failed');
         toast({ title: "Login failed. Please try again." });
         return;
       }
     } catch (error: any) {
-      console.error('Signin error:', error);
+      console.error('📱 Signin error:', error);
+      console.log('📱 Error details:', {
+        code: error?.code,
+        message: error?.message,
+        type: error?.type,
+        response: error?.response,
+        stack: error?.stack
+      });
 
-      // Handle specific error cases
-      if (error?.code === 401) {
+      // Network-specific error handling
+      if (error?.name === 'NetworkError' || error?.message?.includes('network')) {
+        console.log('📱 Network error detected');
+        toast({ title: "Network error. Please check your connection and try again." });
+      } else if (error?.code === 401) {
         toast({ title: "Invalid email or password. Please try again." });
       } else if (error?.message?.includes('Invalid credentials')) {
         toast({ title: "Invalid email or password. Please try again." });
+      } else if (error?.message?.includes('cors')) {
+        console.log('📱 CORS error detected');
+        toast({ title: "Connection error. Please try again." });
       } else {
         toast({ title: "Login failed. Please try again." });
       }
@@ -75,7 +136,9 @@ const SigninForm = () => {
         </p>
         <form
           onSubmit={form.handleSubmit(handleSignin)}
-          className="flex flex-col gap-5 w-full mt-4">
+          className="flex flex-col gap-5 w-full mt-4"
+          autoComplete="on"
+          noValidate>
           <FormField
             control={form.control}
             name="email"
@@ -83,7 +146,18 @@ const SigninForm = () => {
               <FormItem>
                 <FormLabel className="shad-form_label">Email</FormLabel>
                 <FormControl>
-                  <Input type="text" className="shad-input" {...field} />
+                  <Input
+                    type="email"
+                    className="shad-input mobile-input"
+                    autoComplete="email"
+                    autoCapitalize="none"
+                    autoCorrect="off"
+                    spellCheck="false"
+                    inputMode="email"
+                    placeholder="Enter your email"
+                    onTouchStart={() => { }} // Ensures touch events work
+                    {...field}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -97,14 +171,29 @@ const SigninForm = () => {
               <FormItem>
                 <FormLabel className="shad-form_label">Password</FormLabel>
                 <FormControl>
-                  <Input type="password" className="shad-input" {...field} />
+                  <Input
+                    type="password"
+                    className="shad-input mobile-input"
+                    autoComplete="current-password"
+                    autoCapitalize="none"
+                    autoCorrect="off"
+                    spellCheck="false"
+                    placeholder="Enter your password"
+                    onTouchStart={() => { }} // Ensures touch events work
+                    {...field}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
 
-          <Button type="submit" className="shad-button_primary">
+          <Button
+            type="submit"
+            className="shad-button_primary mobile-submit-btn"
+            disabled={isLoading || isUserLoading}
+            onTouchStart={() => { }} // Ensures touch events work
+            aria-label="Sign in to your account">
             {isLoading || isUserLoading ? (
               <div className="flex-center gap-2">
                 <Loader /> Loading...
