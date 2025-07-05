@@ -7,10 +7,10 @@ Your MiraniWell mobile app with comprehensive mobile login fixes is now live on 
 ## 🌐 Production URLs
 
 **Primary Production URL:**
-- https://miriani-well-mobile-6035cdmn5-miriani-wells-projects.vercel.app
+- <https://miriani-well-mobile-6035cdmn5-miriani-wells-projects.vercel.app>
 
 **Inspect URL (for monitoring):**
-- https://vercel.com/miriani-wells-projects/miriani-well-mobile/H77gP9mHLokxh7tmuQfpGEez3rzK
+- <https://vercel.com/miriani-wells-projects/miriani-well-mobile/H77gP9mHLokxh7tmuQfpGEez3rzK>
 
 ## 📱 Mobile Fixes Deployed
 
@@ -40,7 +40,7 @@ Your MiraniWell mobile app with comprehensive mobile login fixes is now live on 
 
 ## 🧪 Testing Your Live Mobile App
 
-### On Your Mobile Device:
+### On Your Mobile Device
 
 1. **Open the production URL:**
    ```
