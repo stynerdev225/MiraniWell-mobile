@@ -83,7 +83,7 @@ Mirani Well is a **mobile-first wellness platform** that combines social network
 **Mirani Well represents the future of digital wellness - where community support meets personalized technology to create meaningful, lasting wellness transformation.**
 
 ## Live Platform
-🌐 **Current Deployment**: https://miriani-well-mobile-8ysr9m63v-miriani-wells-projects.vercel.app
+🌐 **Current Deployment**: [Live Platform](https://miriani-well-mobile-8ysr9m63v-miriani-wells-projects.vercel.app)
 
 ## Key Differentiators
 - **Not just another wellness app** - it's a wellness community

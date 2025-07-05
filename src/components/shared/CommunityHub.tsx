@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Users, Trophy, Calendar, Heart, MessageCircle, Share2, Crown, Star } from 'lucide-react';
+import { applyDynamicStyles } from '../../utils/dynamicStyles';
 
 interface Challenge {
     id: string;
@@ -33,6 +34,11 @@ interface CommunityPost {
 }
 
 const CommunityHub = () => {
+    // Apply dynamic styles when component mounts and updates
+    useEffect(() => {
+        applyDynamicStyles();
+    });
+
     const [challenges] = useState<Challenge[]>([
         {
             id: '1',

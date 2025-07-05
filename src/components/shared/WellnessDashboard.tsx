@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
     BarChart3,
     TrendingUp,
@@ -9,6 +9,7 @@ import {
     Target,
     Zap
 } from 'lucide-react';
+import { applyDynamicStyles } from '../../utils/dynamicStyles';
 
 interface WellnessMetric {
     label: string;
@@ -21,6 +22,11 @@ interface WellnessMetric {
 }
 
 const WellnessDashboard = () => {
+    // Apply dynamic styles when component mounts and updates
+    useEffect(() => {
+        applyDynamicStyles();
+    });
+
     // Helper function to create dynamic height for chart bars
     const getBarHeight = (value: number, maxValue: number = 10) => {
         const percentage = (value / maxValue) * 100;
@@ -32,16 +38,7 @@ const WellnessDashboard = () => {
         return `${(value / maxValue) * 100}%`;
     };
 
-    // Create inline styles using CSS custom properties
-    const createProgressStyle = (width: string): React.CSSProperties => ({
-        '--progress-width': width,
-        width: 'var(--progress-width)'
-    } as React.CSSProperties);
 
-    const createBarStyle = (height: string): React.CSSProperties => ({
-        '--bar-height': height,
-        height: 'var(--bar-height)'
-    } as React.CSSProperties);
 
     const metrics: WellnessMetric[] = [
         {
@@ -136,7 +133,7 @@ const WellnessDashboard = () => {
                                                 metric.color.includes('blue') ? 'bg-blue-400' :
                                                     'bg-green-400'
                                             }`}
-                                        {...{ style: createProgressStyle(getProgressWidth(metric.value, metric.maxValue)) }}
+                                        data-progress-width={getProgressWidth(metric.value, metric.maxValue)}
                                     ></div>
                                 </div>
                             </div>
@@ -187,15 +184,15 @@ const WellnessDashboard = () => {
                                 <div className="flex flex-col gap-1 items-center w-full h-24 justify-end">
                                     <div
                                         className="w-2 bg-red-400 rounded-t opacity-80 chart-bar"
-                                        {...{ style: createBarStyle(getBarHeight(data.mood)) }}
+                                        data-bar-height={getBarHeight(data.mood)}
                                     ></div>
                                     <div
                                         className="w-2 bg-yellow-400 rounded-t opacity-80 chart-bar"
-                                        {...{ style: createBarStyle(getBarHeight(data.energy)) }}
+                                        data-bar-height={getBarHeight(data.energy)}
                                     ></div>
                                     <div
                                         className="w-2 bg-blue-400 rounded-t opacity-80 chart-bar"
-                                        {...{ style: createBarStyle(getBarHeight(data.stress)) }}
+                                        data-bar-height={getBarHeight(data.stress)}
                                     ></div>
                                 </div>
                                 <span className="text-xs text-light-3">{data.day}</span>

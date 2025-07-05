@@ -11,7 +11,9 @@ Mirani Well is a comprehensive **mobile wellness platform** designed to support 
 
 ## 🎯 **Core Mission**
 
-**"Empowering individuals to achieve mental wellness through community, mindfulness, and personalized growth tools."**
+### Mission Statement
+
+"Empowering individuals to achieve mental wellness through community, mindfulness, and personalized growth tools."
 
 Mirani Well bridges the gap between traditional wellness apps and social platforms by creating a space where users can:
 - Track their mental health and wellness progress
@@ -24,14 +26,14 @@ Mirani Well bridges the gap between traditional wellness apps and social platfor
 
 ## 👥 **Target Audience**
 
-### Primary Users:
+### Primary Users
 - **Adults aged 25-45** seeking mental wellness support
 - **Wellness enthusiasts** interested in mindfulness and personal growth
 - **Individuals managing stress** from work, relationships, or life transitions
 - **People seeking community** around wellness and mental health
 - **Those interested in holistic wellness** (mind, body, spirit)
 
-### Secondary Users:
+### Secondary Users
 - **Wellness coaches and practitioners** looking to connect with clients
 - **Corporate wellness programs** seeking employee engagement tools
 - **Healthcare professionals** recommending digital wellness tools
@@ -82,7 +84,7 @@ Mirani Well bridges the gap between traditional wellness apps and social platfor
 
 ## 💡 **Unique Value Proposition**
 
-### What Makes Mirani Well Different:
+### What Makes Mirani Well Different
 
 1. **Community-Driven Wellness**: Unlike isolated wellness apps, Mirani Well emphasizes community support and shared experiences
 

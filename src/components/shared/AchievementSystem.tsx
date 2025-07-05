@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Award, Star, Flame, Trophy } from 'lucide-react';
+import { applyDynamicStyles } from '../../utils/dynamicStyles';
 
 interface Achievement {
     id: string;
@@ -19,6 +20,11 @@ interface WellnessStreak {
 }
 
 const AchievementSystem = () => {
+    // Apply dynamic styles when component mounts and updates
+    useEffect(() => {
+        applyDynamicStyles();
+    });
+
     const achievements: Achievement[] = [
         {
             id: '1',

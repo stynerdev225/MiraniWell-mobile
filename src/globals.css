@@ -571,6 +571,15 @@
   .chart-bar {
     height: var(--bar-height);
   }
+
+  /* Data attribute based styling for progress bars */
+  .progress-bar[data-progress-width] {
+    width: attr(data-progress-width);
+  }
+
+  .chart-bar[data-bar-height] {
+    height: attr(data-bar-height);
+  }
 }
 
 @layer components {
