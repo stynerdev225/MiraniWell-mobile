@@ -1,4 +1,5 @@
 import { useLocation } from "react-router-dom";
+import { useUser } from "@clerk/clerk-react";
 import { createContext, useContext } from "react";
 
 import { IUser } from "@/types";
@@ -13,17 +14,26 @@ export const INITIAL_USER = {
   bio: "",
 };
 
-// Dummy context for Clerk pages
-const dummyContextValue = {
-  user: INITIAL_USER,
-  setUser: () => { },
-  isLoading: false,
-  isInitialized: true,
-  isAuthenticated: false,
-  setIsAuthenticated: () => { },
-  checkAuthUser: async () => false,
-  handleSessionExpired: () => { },
-};
+// Dummy context for Clerk pages or when Clerk user is authenticated
+function createClerkAwareContext(clerkUser: any) {
+  return {
+    user: clerkUser ? {
+      id: clerkUser.id,
+      name: clerkUser.fullName || clerkUser.firstName || '',
+      username: clerkUser.username || clerkUser.emailAddresses?.[0]?.emailAddress || '',
+      email: clerkUser.emailAddresses?.[0]?.emailAddress || '',
+      imageUrl: clerkUser.imageUrl || '',
+      bio: '',
+    } : INITIAL_USER,
+    setUser: () => { },
+    isLoading: false,
+    isInitialized: true,
+    isAuthenticated: !!clerkUser,
+    setIsAuthenticated: () => { },
+    checkAuthUser: async () => !!clerkUser,
+    handleSessionExpired: () => { },
+  };
+}
 
 type IContextType = {
   user: IUser;
@@ -36,35 +46,49 @@ type IContextType = {
   handleSessionExpired: () => void;
 };
 
-const DummyAuthContext = createContext<IContextType>(dummyContextValue);
+const ClerkAwareAuthContext = createContext<IContextType | null>(null);
 
-function DummyAuthProvider({ children }: { children: React.ReactNode }) {
+function ClerkAwareAuthProvider({ children }: { children: React.ReactNode }) {
+  const { user: clerkUser, isSignedIn } = useUser();
+  const contextValue = createClerkAwareContext(isSignedIn ? clerkUser : null);
+
   return (
-    <DummyAuthContext.Provider value={dummyContextValue}>
+    <ClerkAwareAuthContext.Provider value={contextValue}>
       {children}
-    </DummyAuthContext.Provider>
+    </ClerkAwareAuthContext.Provider>
   );
 }
 
 // Smart wrapper that decides which provider to use
 export function SmartAuthProvider({ children }: { children: React.ReactNode }) {
   const location = useLocation();
+  const { user: clerkUser, isSignedIn } = useUser();
   const isClerkPage = location.pathname.startsWith('/clerk-');
 
-  if (isClerkPage) {
-    return <DummyAuthProvider>{children}</DummyAuthProvider>;
+  // If on Clerk pages OR user is authenticated with Clerk, use Clerk-aware context
+  if (isClerkPage || isSignedIn) {
+    return <ClerkAwareAuthProvider>{children}</ClerkAwareAuthProvider>;
   }
 
+  // Otherwise, use real Appwrite context
   return <RealAuthProvider>{children}</RealAuthProvider>;
 }
 
 export function useUserContext() {
   const location = useLocation();
+  const { user: clerkUser, isSignedIn } = useUser();
   const isClerkPage = location.pathname.startsWith('/clerk-');
 
-  if (isClerkPage) {
-    return useContext(DummyAuthContext);
+  // If on Clerk pages OR user is authenticated with Clerk, use Clerk-aware context
+  if (isClerkPage || isSignedIn) {
+    const context = useContext(ClerkAwareAuthContext);
+    if (!context) {
+      // Fallback - create context on the fly
+      return createClerkAwareContext(isSignedIn ? clerkUser : null);
+    }
+    return context;
   }
 
+  // Otherwise, use real Appwrite context
   return useRealUserContext();
 }
