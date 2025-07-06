@@ -27,9 +27,17 @@ export const client = new Client();
 try {
   client.setEndpoint(appwriteConfig.url);
   client.setProject(appwriteConfig.projectId);
+  
+  // Set API key if available (for dev keys that bypass CORS)
+  if (import.meta.env.VITE_APPWRITE_API_KEY) {
+    (client as any).setKey(import.meta.env.VITE_APPWRITE_API_KEY);
+    console.log("🔑 API key configured for CORS bypass");
+  }
+  
   console.log("Appwrite client configured with:", { 
     url: appwriteConfig.url,
     projectId: appwriteConfig.projectId,
+    hasApiKey: !!import.meta.env.VITE_APPWRITE_API_KEY,
     isDevelopment: import.meta.env.DEV,
     hasProjectId: !!import.meta.env.VITE_APPWRITE_PROJECT_ID,
     hasUrl: !!import.meta.env.VITE_APPWRITE_URL
