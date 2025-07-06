@@ -46,14 +46,36 @@ VITE_CLERK_PUBLISHABLE_KEY=pk_test_your_actual_publishable_key_here
    - **Value**: Your Clerk publishable key
    - **Environment**: Production (and optionally Preview/Development)
 
-### 6. 🔧 Configure Clerk Dashboard
+### 6. ✅ Configure Clerk Dashboard
 In your Clerk dashboard, you need to configure the allowed domains:
 
-1. Go to "Settings" → "Domains"
-2. Add your Vercel domain: `miriani-well-mobile.vercel.app`
-3. Configure redirect URLs:
-   - Sign-in redirect: `https://miriani-well-mobile.vercel.app/`
-   - Sign-up redirect: `https://miriani-well-mobile.vercel.app/`
+1. Go to "Settings" → "Domains" → "Satellites"
+2. Add your Vercel domain: `miriani-well-mobile.vercel.app` (✅ COMPLETED)
+3. Status should show "Verified" with a green checkmark
+
+### 7. ✅ Deploy and Test
+All changes have been deployed to production. Test these URLs:
+
+- **Debug Page**: https://miriani-well-mobile.vercel.app/clerk-debug
+- **Sign In**: https://miriani-well-mobile.vercel.app/clerk-sign-in
+- **Sign Up**: https://miriani-well-mobile.vercel.app/clerk-sign-up
+- **Test Page**: https://miriani-well-mobile.vercel.app/clerk-test
+
+## Troubleshooting Network Errors
+
+If you encounter "network error" messages:
+
+1. **Check the debug page first**: https://miriani-well-mobile.vercel.app/clerk-debug
+2. **Look for "Clerk Connection Test"** - should show ✅ "Clerk connection successful!"
+3. **Verify publishable key** in Clerk dashboard API Keys section
+4. **Check satellite domain** is verified in Clerk dashboard
+5. **Clear browser cache** and try again
+
+### Fixed Issues:
+- ✅ Fixed URL routing conflicts between Appwrite and Clerk
+- ✅ Added proper ClerkProvider configuration  
+- ✅ Fixed sign-in/sign-up URL references
+- ✅ Added connection testing and debugging tools
 
 ## Testing Routes
 
