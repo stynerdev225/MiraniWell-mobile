@@ -24,16 +24,16 @@ export const appwriteConfig = {
 // This environment variable will be set when using Clerk exclusively
 const isAppwriteDisabled = import.meta.env.VITE_DISABLE_APPWRITE === 'true';
 
-let client: Client | null = null;
-let account: Account | null = null;
-let databases: Databases | null = null;
-let storage: Storage | null = null;
-let avatars: Avatars | null = null;
+// Initialize the Appwrite client
+export const client = new Client();
+export let account: Account;
+export let databases: Databases;
+export let storage: Storage;
+export let avatars: Avatars;
 
 // Only initialize Appwrite if not disabled
 if (!isAppwriteDisabled) {
   try {
-    client = new Client();
     client.setEndpoint(appwriteConfig.url);
     client.setProject(appwriteConfig.projectId);
     
@@ -77,6 +77,11 @@ if (!isAppwriteDisabled) {
   }
 } else {
   console.log('🚨 Appwrite initialization disabled via VITE_DISABLE_APPWRITE=true');
+  // Create a dummy client to avoid TypeScript errors
+  // These should never be used when Appwrite is disabled
+  const dummyClient = new Client();
+  account = new Account(dummyClient);
+  databases = new Databases(dummyClient);
+  storage = new Storage(dummyClient);
+  avatars = new Avatars(dummyClient);
 }
-
-export { client, account, databases, storage, avatars };
