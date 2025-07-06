@@ -6,7 +6,7 @@ The MiraniWell mobile app was experiencing login issues due to Appwrite CORS err
 ## Solution Implemented
 We successfully migrated from Appwrite to Clerk authentication and implemented a complete isolation system to prevent Appwrite from interfering with Clerk pages.
 
-### Key Changes Made:
+### Key Changes Made
 
 1. **Clerk Authentication Setup**
    - Installed and configured Clerk SDK
@@ -29,7 +29,8 @@ We successfully migrated from Appwrite to Clerk authentication and implemented a
    - Prevented Appwrite state initialization on Clerk routes
    - Eliminated auth state conflicts between Appwrite and Clerk
 
-### Files Modified:
+### Files Modified
+
 - `/src/context/AuthContext.tsx` - Main authentication context with dynamic imports
 - `/src/App.tsx` - Route configuration and redirects
 - `/src/_auth/forms/ClerkSignInForm.tsx` - Clerk sign-in form
@@ -64,8 +65,8 @@ We successfully migrated from Appwrite to Clerk authentication and implemented a
 The current implementation successfully resolves all mobile login issues while maintaining system stability and providing a clear migration path.
 
 ## Production URLs
-- Clerk Sign In: https://miriani-well-mobile-lum2hjyt1-miriani-wells-projects.vercel.app/clerk-sign-in
-- Clerk Sign Up: https://miriani-well-mobile-lum2hjyt1-miriani-wells-projects.vercel.app/clerk-sign-up
-- Clerk Debug: https://miriani-well-mobile-lum2hjyt1-miriani-wells-projects.vercel.app/clerk-debug
+- [Clerk Sign In](https://miriani-well-mobile-lum2hjyt1-miriani-wells-projects.vercel.app/clerk-sign-in)
+- [Clerk Sign Up](https://miriani-well-mobile-lum2hjyt1-miriani-wells-projects.vercel.app/clerk-sign-up)
+- [Clerk Debug](https://miriani-well-mobile-lum2hjyt1-miriani-wells-projects.vercel.app/clerk-debug)
 
 All mobile login issues have been resolved! 🎉
