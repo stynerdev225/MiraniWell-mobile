@@ -2,12 +2,6 @@ import { useNavigate } from "react-router-dom";
 import { createContext, useContext, useEffect, useState, useCallback } from "react";
 
 import { IUser } from "@/types";
-import { getCurrentUser } from "@/lib/appwrite/api";
-import { displayDevModeBanner, isDevelopment } from "@/lib/appwrite/devUtils";
-import { clearSessionData, isSessionError } from "@/lib/appwrite/sessionUtils";
-// import { debugDatabase } from "@/lib/appwrite/debugUtils";
-// import { createMissingUserDocument, clearAllSessions } from "@/lib/appwrite/fixUtils";
-import { fixExistingUser } from "@/lib/appwrite/fixExistingUser";
 
 export const INITIAL_USER = {
   id: "",
@@ -44,31 +38,37 @@ const AuthContext = createContext<IContextType>(INITIAL_STATE);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const navigate = useNavigate();
+
+  // Check if we're on a Clerk page and completely disable Appwrite AuthContext
+  const isClerkPage = window.location.pathname.startsWith('/clerk-');
+
+  if (isClerkPage) {
+    // Return a minimal context that doesn't interfere with Clerk
+    const clerkValue = {
+      user: INITIAL_USER,
+      setUser: () => { },
+      isLoading: false,
+      isInitialized: true,
+      isAuthenticated: false,
+      setIsAuthenticated: () => { },
+      checkAuthUser: async () => false,
+      handleSessionExpired: () => { },
+    };
+
+    return <AuthContext.Provider value={clerkValue}>{children}</AuthContext.Provider>;
+  }
+
+  // Only import Appwrite modules when not on Clerk pages
   const [user, setUser] = useState<IUser>(INITIAL_USER);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(true); // Start with true to prevent flash
   const [isInitialized, setIsInitialized] = useState(false);
 
-  // Check if we're on a Clerk page and completely disable Appwrite AuthContext
-  const isClerkPage = window.location.pathname.startsWith('/clerk-');
-  
-  if (isClerkPage) {
-    // Return a minimal context that doesn't interfere with Clerk
-    const clerkValue = {
-      user: INITIAL_USER,
-      setUser: () => {},
-      isLoading: false,
-      isInitialized: true,
-      isAuthenticated: false,
-      setIsAuthenticated: () => {},
-      checkAuthUser: async () => false,
-      handleSessionExpired: () => {},
-    };
-    
-    return <AuthContext.Provider value={clerkValue}>{children}</AuthContext.Provider>;
-  }
-
   const checkAuthUser = async () => {
+    // Dynamic import to avoid loading Appwrite on Clerk pages
+    const { getCurrentUser } = await import("@/lib/appwrite/api");
+    const { isSessionError } = await import("@/lib/appwrite/sessionUtils");
+
     // Only show loading state during initial check
     if (!isInitialized) {
       setIsLoading(true);
@@ -114,8 +114,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  const handleSessionExpired = useCallback(() => {
+  const handleSessionExpired = useCallback(async () => {
     console.log('Handling session expiration');
+
+    // Dynamic import to avoid loading Appwrite on Clerk pages
+    const { clearSessionData } = await import("@/lib/appwrite/sessionUtils");
 
     // Clear session data
     clearSessionData();
@@ -150,16 +153,20 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     // Debug database state (temporarily disabled)
     // debugDatabase();
 
-    // Make debug functions available globally for testing
-    (window as any).fixExistingUser = fixExistingUser;
+    // Make debug functions available globally for testing (with dynamic import)
+    import("@/lib/appwrite/fixExistingUser").then(({ fixExistingUser }) => {
+      (window as any).fixExistingUser = fixExistingUser;
+    });
 
     // (window as any).createMissingUserDocument = createMissingUserDocument;
     // (window as any).clearAllSessions = clearAllSessions;
 
-    // Display the development mode banner if in development mode
-    if (isDevelopment) {
-      displayDevModeBanner();
-    }
+    // Display the development mode banner if in development mode (with dynamic import)
+    import("@/lib/appwrite/devUtils").then(({ displayDevModeBanner, isDevelopment }) => {
+      if (isDevelopment) {
+        displayDevModeBanner();
+      }
+    });
   }, []);
 
   const value = {
