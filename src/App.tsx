@@ -1,4 +1,4 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 
 import {
   Home,
@@ -22,8 +22,6 @@ import {
 } from "@/_root/pages";
 import AuthLayout from "./_auth/AuthLayout";
 import RootLayout from "./_root/RootLayout";
-import SignupForm from "@/_auth/forms/SignupForm";
-import SigninForm from "@/_auth/forms/SigninForm";
 import ClerkSignIn from "@/_auth/pages/ClerkSignIn";
 import ClerkSignUp from "@/_auth/pages/ClerkSignUp";
 import ClerkTest from "@/_root/pages/ClerkTest";
@@ -38,10 +36,10 @@ const App = () => {
     <main className="flex h-screen">
       <GlobalLoader />
       <Routes>
-        {/* public routes */}
+        {/* public routes - now redirecting to Clerk */}
         <Route element={<AuthLayout />}>
-          <Route path="/sign-in" element={<SigninForm />} />
-          <Route path="/sign-up" element={<SignupForm />} />
+          <Route path="/sign-in" element={<Navigate to="/clerk-sign-in" replace />} />
+          <Route path="/sign-up" element={<Navigate to="/clerk-sign-up" replace />} />
           {/* Clerk authentication routes */}
           <Route path="/clerk-sign-in" element={<ClerkSignIn />} />
           <Route path="/clerk-sign-up" element={<ClerkSignUp />} />

@@ -116,9 +116,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setIsAuthenticated(false);
     setUser(INITIAL_USER);
 
-    // Redirect to sign-in if not already there
-    if (!window.location.pathname.includes('/sign-in') && !window.location.pathname.includes('/sign-up')) {
-      navigate('/sign-in');
+    // Redirect to Clerk sign-in if not already there
+    if (!window.location.pathname.includes('/clerk-') && !window.location.pathname.includes('/sign-in') && !window.location.pathname.includes('/sign-up')) {
+      navigate('/clerk-sign-in');
     }
   }, [navigate]);
 
@@ -141,8 +141,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       cookieFallback === undefined
     ) {
       // Check if we're already on auth pages
-      if (!window.location.pathname.includes('/sign-in') && !window.location.pathname.includes('/sign-up')) {
-        navigate("/sign-in");
+      if (!window.location.pathname.includes('/clerk-') && !window.location.pathname.includes('/sign-in') && !window.location.pathname.includes('/sign-up')) {
+        navigate("/clerk-sign-in");
       }
     }
 
