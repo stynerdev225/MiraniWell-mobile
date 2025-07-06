@@ -100,7 +100,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     // Dynamic import to avoid loading Appwrite on Clerk pages
     const { clearSessionData } = await import("@/lib/appwrite/sessionUtils");
-    
+
     // Clear session data
     clearSessionData();
 

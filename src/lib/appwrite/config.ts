@@ -20,47 +20,63 @@ export const appwriteConfig = {
   moodEntriesCollectionId: import.meta.env.VITE_APPWRITE_MOOD_ENTRIES_COLLECTION_ID || 'mock_mood_entries_collection',
 };
 
-// Initialize the Appwrite client
-export const client = new Client();
+// Check if we should disable Appwrite initialization 
+// This environment variable will be set when using Clerk exclusively
+const isAppwriteDisabled = import.meta.env.VITE_DISABLE_APPWRITE === 'true';
 
-// Configure the client
-try {
-  client.setEndpoint(appwriteConfig.url);
-  client.setProject(appwriteConfig.projectId);
-  
-  // Dev keys are for server-side usage, not client-side
-  // For client-side, we need proper platform configuration in Appwrite
-  console.log("Appwrite client configured with:", { 
-    url: appwriteConfig.url,
-    projectId: appwriteConfig.projectId,
-    hasApiKey: !!import.meta.env.VITE_APPWRITE_API_KEY,
-    isDevelopment: import.meta.env.DEV,
-    hasProjectId: !!import.meta.env.VITE_APPWRITE_PROJECT_ID,
-    hasUrl: !!import.meta.env.VITE_APPWRITE_URL,
-    currentOrigin: typeof window !== 'undefined' ? window.location.origin : 'server'
-  });
-  
-  // Enhanced debugging for network issues
-  if (appwriteConfig.projectId === 'mock_project_id') {
-    console.warn('🚨 WARNING: Using mock project ID. Check Vercel environment variables!');
-    console.warn('🔧 Expected environment variables:', {
-      VITE_APPWRITE_URL: import.meta.env.VITE_APPWRITE_URL,
-      VITE_APPWRITE_PROJECT_ID: import.meta.env.VITE_APPWRITE_PROJECT_ID,
-      VITE_USE_MOCK_DATA: import.meta.env.VITE_USE_MOCK_DATA
+let client: Client | null = null;
+let account: Account | null = null;
+let databases: Databases | null = null;
+let storage: Storage | null = null;
+let avatars: Avatars | null = null;
+
+// Only initialize Appwrite if not disabled
+if (!isAppwriteDisabled) {
+  try {
+    client = new Client();
+    client.setEndpoint(appwriteConfig.url);
+    client.setProject(appwriteConfig.projectId);
+    
+    // Dev keys are for server-side usage, not client-side
+    // For client-side, we need proper platform configuration in Appwrite
+    console.log("Appwrite client configured with:", { 
+      url: appwriteConfig.url,
+      projectId: appwriteConfig.projectId,
+      hasApiKey: !!import.meta.env.VITE_APPWRITE_API_KEY,
+      isDevelopment: import.meta.env.DEV,
+      hasProjectId: !!import.meta.env.VITE_APPWRITE_PROJECT_ID,
+      hasUrl: !!import.meta.env.VITE_APPWRITE_URL,
+      currentOrigin: typeof window !== 'undefined' ? window.location.origin : 'server'
+    });
+    
+    // Enhanced debugging for network issues
+    if (appwriteConfig.projectId === 'mock_project_id') {
+      console.warn('🚨 WARNING: Using mock project ID. Check Vercel environment variables!');
+      console.warn('🔧 Expected environment variables:', {
+        VITE_APPWRITE_URL: import.meta.env.VITE_APPWRITE_URL,
+        VITE_APPWRITE_PROJECT_ID: import.meta.env.VITE_APPWRITE_PROJECT_ID,
+        VITE_USE_MOCK_DATA: import.meta.env.VITE_USE_MOCK_DATA
+      });
+    }
+    
+    // Initialize services
+    account = new Account(client);
+    databases = new Databases(client);
+    storage = new Storage(client);
+    avatars = new Avatars(client);
+    
+  } catch (error) {
+    console.error("Failed to configure Appwrite client:", error);
+    // Log detailed error information
+    console.error("Configuration details:", {
+      url: appwriteConfig.url,
+      projectId: appwriteConfig.projectId,
+      environment: import.meta.env.NODE_ENV,
+      allEnvVars: Object.keys(import.meta.env).filter(key => key.startsWith('VITE_'))
     });
   }
-} catch (error) {
-  console.error("Failed to configure Appwrite client:", error);
-  // Log detailed error information
-  console.error("Configuration details:", {
-    url: appwriteConfig.url,
-    projectId: appwriteConfig.projectId,
-    environment: import.meta.env.NODE_ENV,
-    allEnvVars: Object.keys(import.meta.env).filter(key => key.startsWith('VITE_'))
-  });
+} else {
+  console.log('🚨 Appwrite initialization disabled via VITE_DISABLE_APPWRITE=true');
 }
 
-export const account = new Account(client);
-export const databases = new Databases(client);
-export const storage = new Storage(client);
-export const avatars = new Avatars(client);
+export { client, account, databases, storage, avatars };
