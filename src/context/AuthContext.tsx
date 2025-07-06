@@ -123,6 +123,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, [navigate]);
 
   useEffect(() => {
+    // Skip Appwrite completely on Clerk pages
+    const isClerkPage = window.location.pathname.startsWith('/clerk-');
+    if (isClerkPage) {
+      console.log('🔐 On Clerk page, skipping Appwrite AuthContext completely');
+      setIsLoading(false);
+      setIsInitialized(true);
+      return;
+    }
+
     const cookieFallback = localStorage.getItem("cookieFallback");
 
     // Only redirect if we're not already on a sign-in/sign-up page
