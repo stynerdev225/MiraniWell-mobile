@@ -49,18 +49,26 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [isLoading, setIsLoading] = useState(true); // Start with true to prevent flash
   const [isInitialized, setIsInitialized] = useState(false);
 
-  const checkAuthUser = async () => {
-    // Skip Appwrite auth check if on Clerk pages
-    const isClerkPage = window.location.pathname.startsWith('/clerk-');
-    if (isClerkPage) {
-      console.log('Skipping Appwrite auth check on Clerk page');
-      if (!isInitialized) {
-        setIsLoading(false);
-        setIsInitialized(true);
-      }
-      return false;
-    }
+  // Check if we're on a Clerk page and completely disable Appwrite AuthContext
+  const isClerkPage = window.location.pathname.startsWith('/clerk-');
+  
+  if (isClerkPage) {
+    // Return a minimal context that doesn't interfere with Clerk
+    const clerkValue = {
+      user: INITIAL_USER,
+      setUser: () => {},
+      isLoading: false,
+      isInitialized: true,
+      isAuthenticated: false,
+      setIsAuthenticated: () => {},
+      checkAuthUser: async () => false,
+      handleSessionExpired: () => {},
+    };
+    
+    return <AuthContext.Provider value={clerkValue}>{children}</AuthContext.Provider>;
+  }
 
+  const checkAuthUser = async () => {
     // Only show loading state during initial check
     if (!isInitialized) {
       setIsLoading(true);
@@ -123,15 +131,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, [navigate]);
 
   useEffect(() => {
-    // Skip Appwrite completely on Clerk pages
-    const isClerkPage = window.location.pathname.startsWith('/clerk-');
-    if (isClerkPage) {
-      console.log('🔐 On Clerk page, skipping Appwrite AuthContext completely');
-      setIsLoading(false);
-      setIsInitialized(true);
-      return;
-    }
-
     const cookieFallback = localStorage.getItem("cookieFallback");
 
     // Only redirect if we're not already on a sign-in/sign-up page
