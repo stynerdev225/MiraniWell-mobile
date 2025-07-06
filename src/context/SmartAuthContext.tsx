@@ -62,7 +62,7 @@ function ClerkAwareAuthProvider({ children }: { children: React.ReactNode }) {
 // Smart wrapper that decides which provider to use
 export function SmartAuthProvider({ children }: { children: React.ReactNode }) {
   const location = useLocation();
-  const { user: clerkUser, isSignedIn } = useUser();
+  const { isSignedIn } = useUser();
   const isClerkPage = location.pathname.startsWith('/clerk-');
 
   // If on Clerk pages OR user is authenticated with Clerk, use Clerk-aware context
