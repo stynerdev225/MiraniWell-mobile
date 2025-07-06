@@ -25,14 +25,14 @@ npm install @clerk/clerk-react
 - Added Clerk routes to `/src/App.tsx`
 - Routes available: `/clerk-sign-in` and `/clerk-sign-up`
 
-### 5. 🔧 Configure Clerk Environment Variables
+### 5. ✅ Configure Clerk Environment Variables
 You need to get your Clerk Publishable Key from your Clerk dashboard and add it to your environment variables.
 
 #### From Clerk Dashboard
 1. Go to your Clerk dashboard: <https://dashboard.clerk.com/apps/app_2zTqCFdARySwUPn4ibCt3muwhDG>
 2. Navigate to "API Keys" section
 3. Copy the "Publishable Key" (starts with `pk_test_` or `pk_live_`)
-4. Add it to your `.env` file
+4. Add it to your `.env` file (✅ COMPLETED)
 
 #### Update .env file
 ```env
@@ -41,7 +41,7 @@ VITE_CLERK_PUBLISHABLE_KEY=pk_test_your_actual_publishable_key_here
 
 #### Update Vercel Environment Variables
 1. Go to your Vercel dashboard: [https://vercel.com/miriani-wells-projects/miriani-well-mobile/settings/environment-variables](https://vercel.com/miriani-wells-projects/miriani-well-mobile/settings/environment-variables)
-2. Add the environment variable:
+2. Add the environment variable: (✅ COMPLETED)
    - **Name**: `VITE_CLERK_PUBLISHABLE_KEY`
    - **Value**: Your Clerk publishable key
    - **Environment**: Production (and optionally Preview/Development)
@@ -56,26 +56,31 @@ In your Clerk dashboard, you need to configure the allowed domains:
 ### 7. ✅ Deploy and Test
 All changes have been deployed to production. Test these URLs:
 
-- **Debug Page**: https://miriani-well-mobile.vercel.app/clerk-debug
-- **Sign In**: https://miriani-well-mobile.vercel.app/clerk-sign-in
-- **Sign Up**: https://miriani-well-mobile.vercel.app/clerk-sign-up
-- **Test Page**: https://miriani-well-mobile.vercel.app/clerk-test
+- **Debug Page**: <https://miriani-well-mobile.vercel.app/clerk-debug>
+- **Sign In**: <https://miriani-well-mobile.vercel.app/clerk-sign-in>
+- **Sign Up**: <https://miriani-well-mobile.vercel.app/clerk-sign-up>
+- **Test Page**: <https://miriani-well-mobile.vercel.app/clerk-test>
 
 ## Troubleshooting Network Errors
 
 If you encounter "network error" messages:
 
-1. **Check the debug page first**: https://miriani-well-mobile.vercel.app/clerk-debug
+1. **Check the debug page first**: <https://miriani-well-mobile.vercel.app/clerk-debug>
 2. **Look for "Clerk Connection Test"** - should show ✅ "Clerk connection successful!"
 3. **Verify publishable key** in Clerk dashboard API Keys section
 4. **Check satellite domain** is verified in Clerk dashboard
 5. **Clear browser cache** and try again
 
-### Fixed Issues:
+### Console Warning About Development Keys
+You may see a warning: "Clerk has been loaded with development keys." This is normal for test environments. The `pk_test_` key is for development/testing and has usage limits. For production scale, you would need to upgrade to a production key (`pk_live_`).
+
+### Fixed Issues
 - ✅ Fixed URL routing conflicts between Appwrite and Clerk
 - ✅ Added proper ClerkProvider configuration  
 - ✅ Fixed sign-in/sign-up URL references
 - ✅ Added connection testing and debugging tools
+- ✅ Prevented Appwrite interference on Clerk pages
+- ✅ Fixed deprecated prop warnings
 
 ## Testing Routes
 

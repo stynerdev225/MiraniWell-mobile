@@ -50,6 +50,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [isInitialized, setIsInitialized] = useState(false);
 
   const checkAuthUser = async () => {
+    // Skip Appwrite auth check if on Clerk pages
+    const isClerkPage = window.location.pathname.startsWith('/clerk-');
+    if (isClerkPage) {
+      console.log('Skipping Appwrite auth check on Clerk page');
+      if (!isInitialized) {
+        setIsLoading(false);
+        setIsInitialized(true);
+      }
+      return false;
+    }
+
     // Only show loading state during initial check
     if (!isInitialized) {
       setIsLoading(true);
