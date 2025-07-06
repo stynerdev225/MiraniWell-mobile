@@ -38,7 +38,7 @@ const AuthContext = createContext<IContextType>(INITIAL_STATE);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const navigate = useNavigate();
-  
+
   // Check if we're on a Clerk page and completely disable Appwrite AuthContext
   const isClerkPage = window.location.pathname.startsWith('/clerk-');
 
@@ -57,7 +57,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     // Dynamic import to avoid loading Appwrite on Clerk pages
     const { getCurrentUser } = await import("@/lib/appwrite/api");
     const { isSessionError } = await import("@/lib/appwrite/sessionUtils");
-    
+
     // Only show loading state during initial check
     if (!isInitialized) {
       setIsLoading(true);
@@ -113,7 +113,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     // Dynamic import to avoid loading Appwrite on Clerk pages
     const { clearSessionData } = await import("@/lib/appwrite/sessionUtils");
-    
+
     // Clear session data
     clearSessionData();
 

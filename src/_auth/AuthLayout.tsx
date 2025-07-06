@@ -5,9 +5,12 @@ import { useUserContext } from "@/context/AuthContext";
 export default function AuthLayout() {
   const { isAuthenticated } = useUserContext();
 
+  // Skip authentication check on Clerk pages - let Clerk handle it
+  const isClerkPage = window.location.pathname.startsWith('/clerk-');
+  
   return (
     <>
-      {isAuthenticated ? (
+      {!isClerkPage && isAuthenticated ? (
         <Navigate to="/" />
       ) : (
         <div className="mobile-form-wrapper">
