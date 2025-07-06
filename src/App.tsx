@@ -24,6 +24,8 @@ import AuthLayout from "./_auth/AuthLayout";
 import RootLayout from "./_root/RootLayout";
 import SignupForm from "@/_auth/forms/SignupForm";
 import SigninForm from "@/_auth/forms/SigninForm";
+import ClerkSignIn from "@/_auth/pages/ClerkSignIn";
+import ClerkSignUp from "@/_auth/pages/ClerkSignUp";
 import { Toaster } from "@/components/ui/toaster";
 import { GlobalLoader } from "@/components/shared";
 
@@ -38,6 +40,9 @@ const App = () => {
         <Route element={<AuthLayout />}>
           <Route path="/sign-in" element={<SigninForm />} />
           <Route path="/sign-up" element={<SignupForm />} />
+          {/* Clerk authentication routes */}
+          <Route path="/clerk-sign-in" element={<ClerkSignIn />} />
+          <Route path="/clerk-sign-up" element={<ClerkSignUp />} />
         </Route>
 
         {/* private routes */}
