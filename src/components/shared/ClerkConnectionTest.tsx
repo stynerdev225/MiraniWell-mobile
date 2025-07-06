@@ -11,7 +11,7 @@ const ClerkConnectionTest = () => {
             try {
                 console.log('🔐 Testing Clerk connection...');
                 console.log('🔐 Clerk instance:', clerk);
-                
+
                 if (!clerk) {
                     throw new Error('Clerk instance not available');
                 }
@@ -20,7 +20,7 @@ const ClerkConnectionTest = () => {
                 const session = clerk.session;
                 console.log('🔐 Clerk session:', session);
                 console.log('🔐 Clerk loaded:', clerk.loaded);
-                
+
                 setConnectionStatus('connected');
             } catch (error) {
                 console.error('🚨 Clerk connection failed:', error);
@@ -35,14 +35,14 @@ const ClerkConnectionTest = () => {
     return (
         <div className="bg-white rounded-lg shadow-lg p-6 mb-6">
             <h2 className="text-2xl font-bold mb-4">Clerk Connection Test</h2>
-            
+
             {connectionStatus === 'testing' && (
                 <div className="text-center">
                     <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-2"></div>
                     <p className="text-gray-600">Testing connection...</p>
                 </div>
             )}
-            
+
             {connectionStatus === 'connected' && (
                 <div className="text-center">
                     <div className="text-green-600 text-4xl mb-2">✅</div>
@@ -50,7 +50,7 @@ const ClerkConnectionTest = () => {
                     <p className="text-gray-600 text-sm mt-2">Authentication should work properly.</p>
                 </div>
             )}
-            
+
             {connectionStatus === 'failed' && (
                 <div className="text-center">
                     <div className="text-red-600 text-4xl mb-2">❌</div>
