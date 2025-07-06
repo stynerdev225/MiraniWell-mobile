@@ -33,7 +33,7 @@ const ClerkSignUpForm = () => {
                         },
                     }}
                     redirectUrl="/"
-                    signInUrl="/sign-in"
+                    signInUrl="/clerk-sign-in"
                 />
             </div>
         </div>

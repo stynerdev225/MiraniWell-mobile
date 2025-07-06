@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { clerkConfig, logClerkConfig } from '@/lib/clerk/config';
+import ClerkConnectionTest from '@/components/shared/ClerkConnectionTest';
 
 const ClerkDebugPage = () => {
     const [envVars, setEnvVars] = useState<Record<string, string>>({});
@@ -7,7 +8,7 @@ const ClerkDebugPage = () => {
     useEffect(() => {
         // Log Clerk configuration
         logClerkConfig();
-        
+
         // Get environment variables
         const env = {
             VITE_CLERK_PUBLISHABLE_KEY: import.meta.env.VITE_CLERK_PUBLISHABLE_KEY || 'NOT_SET',
@@ -15,9 +16,9 @@ const ClerkDebugPage = () => {
             PROD: import.meta.env.PROD ? 'true' : 'false',
             DEV: import.meta.env.DEV ? 'true' : 'false',
         };
-        
+
         setEnvVars(env);
-        
+
         console.log('🔐 Environment Variables:', env);
         console.log('🔐 Clerk Config:', clerkConfig);
     }, []);
@@ -28,6 +29,8 @@ const ClerkDebugPage = () => {
                 <div className="bg-white rounded-lg shadow-lg p-8">
                     <h1 className="text-3xl font-bold text-center mb-8">Clerk Debug Information</h1>
                     
+                    <ClerkConnectionTest />
+
                     <div className="space-y-6">
                         <div className="bg-gray-50 rounded-lg p-4">
                             <h2 className="text-xl font-semibold mb-4">Environment Variables</h2>

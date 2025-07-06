@@ -26,6 +26,10 @@ export const ClerkAuthProvider = ({ children }: ClerkAuthProviderProps) => {
     return (
         <ClerkProvider
             publishableKey={clerkConfig.publishableKey}
+            signInUrl="/clerk-sign-in"
+            signUpUrl="/clerk-sign-up"
+            afterSignInUrl="/"
+            afterSignUpUrl="/"
         >
             {children}
         </ClerkProvider>
