@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clerk Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .btn {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .btn:hover {
+            background-color: #0056b3;
+        }
+        .error {
+            color: #dc3545;
+            background-color: #f8d7da;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        .success {
+            color: #155724;
+            background-color: #d4edda;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        #console-log {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            padding: 10px;
+            border-radius: 4px;
+            max-height: 300px;
+            overflow-y: auto;
+            font-family: monospace;
+            font-size: 12px;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Clerk Authentication Test</h1>
+        
+        <div id="status"></div>
+        
+        <div>
+            <a href="https://miriani-well-mobile-lum2hjyt1-miriani-wells-projects.vercel.app/clerk-sign-in" class="btn" target="_blank">
+                Open Clerk Sign In
+            </a>
+            <a href="https://miriani-well-mobile-lum2hjyt1-miriani-wells-projects.vercel.app/clerk-sign-up" class="btn" target="_blank">
+                Open Clerk Sign Up
+            </a>
+            <a href="https://miriani-well-mobile-lum2hjyt1-miriani-wells-projects.vercel.app/clerk-debug" class="btn" target="_blank">
+                Open Clerk Debug
+            </a>
+        </div>
+        
+        <h3>Console Monitor</h3>
+        <button onclick="checkPages()" class="btn">Check Clerk Pages</button>
+        <div id="console-log"></div>
+        
+        <h3>Test Instructions</h3>
+        <ol>
+            <li>Click "Open Clerk Sign In" to test the sign-in page</li>
+            <li>Open Developer Tools (F12) and check the Console tab</li>
+            <li>Look for any errors related to Appwrite (401 errors, CORS errors, etc.)</li>
+            <li>The page should load without any Appwrite-related errors</li>
+            <li>You should see Clerk authentication components working properly</li>
+        </ol>
+        
+        <h3>Expected Results</h3>
+        <div class="success">
+            ✅ No Appwrite 401 errors<br>
+            ✅ No CORS errors<br>
+            ✅ No "minified React error" messages<br>
+            ✅ Clerk authentication components load properly<br>
+            ✅ No flickering or loading issues
+        </div>
+        
+        <h3>If You See Issues</h3>
+        <div class="error">
+            ❌ Appwrite 401 errors - Appwrite is still trying to authenticate<br>
+            ❌ CORS errors - Appwrite is making network requests<br>
+            ❌ React minified errors - Context/provider issues<br>
+            ❌ Flickering - Auth state changes causing re-renders
+        </div>
+    </div>
+
+    <script>
+        function checkPages() {
+            const log = document.getElementById('console-log');
+            log.innerHTML = 'Checking Clerk pages...\n';
+            
+            // This would be expanded to actually test the pages
+            // For now, it just shows the testing process
+            setTimeout(() => {
+                log.innerHTML += 'Open the Clerk pages manually and check the browser console.\n';
+                log.innerHTML += 'Look for any errors in the Network tab as well.\n';
+                log.innerHTML += 'The main goal is to see NO Appwrite-related errors on Clerk pages.\n';
+            }, 1000);
+        }
+    </script>
+</body>
+</html>
