@@ -28,19 +28,19 @@ npm install @clerk/clerk-react
 ### 5. 🔧 Configure Clerk Environment Variables
 You need to get your Clerk Publishable Key from your Clerk dashboard and add it to your environment variables.
 
-#### From Clerk Dashboard:
-1. Go to your Clerk dashboard: https://dashboard.clerk.com/apps/app_2zTqCFdARySwUPn4ibCt3muwhDG
+#### From Clerk Dashboard
+1. Go to your Clerk dashboard: <https://dashboard.clerk.com/apps/app_2zTqCFdARySwUPn4ibCt3muwhDG>
 2. Navigate to "API Keys" section
 3. Copy the "Publishable Key" (starts with `pk_test_` or `pk_live_`)
 4. Add it to your `.env` file
 
-#### Update .env file:
+#### Update .env file
 ```env
 VITE_CLERK_PUBLISHABLE_KEY=pk_test_your_actual_publishable_key_here
 ```
 
-#### Update Vercel Environment Variables:
-1. Go to your Vercel dashboard: https://vercel.com/miriani-wells-projects/miriani-well-mobile/settings/environment-variables
+#### Update Vercel Environment Variables
+1. Go to your Vercel dashboard: [https://vercel.com/miriani-wells-projects/miriani-well-mobile/settings/environment-variables](https://vercel.com/miriani-wells-projects/miriani-well-mobile/settings/environment-variables)
 2. Add the environment variable:
    - **Name**: `VITE_CLERK_PUBLISHABLE_KEY`
    - **Value**: Your Clerk publishable key
@@ -57,11 +57,11 @@ In your Clerk dashboard, you need to configure the allowed domains:
 
 ## Testing Routes
 
-### Development:
+### Development
 - Sign In: `http://localhost:5173/clerk-sign-in`
 - Sign Up: `http://localhost:5173/clerk-sign-up`
 
-### Production:
+### Production
 - Sign In: `https://miriani-well-mobile.vercel.app/clerk-sign-in`
 - Sign Up: `https://miriani-well-mobile.vercel.app/clerk-sign-up`
 
@@ -69,7 +69,7 @@ In your Clerk dashboard, you need to configure the allowed domains:
 
 1. **No CORS Issues**: Clerk handles authentication through its own infrastructure
 2. **Mobile-First**: Designed specifically for modern web applications
-3. **Built-in Features**: 
+3. **Built-in Features**:
    - Email verification
    - Password reset
    - Social logins (Google, Facebook, etc.)

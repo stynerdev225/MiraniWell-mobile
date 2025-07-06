@@ -27,6 +27,7 @@ import SigninForm from "@/_auth/forms/SigninForm";
 import ClerkSignIn from "@/_auth/pages/ClerkSignIn";
 import ClerkSignUp from "@/_auth/pages/ClerkSignUp";
 import ClerkTest from "@/_root/pages/ClerkTest";
+import ClerkDebug from "@/_root/pages/ClerkDebug";
 import { Toaster } from "@/components/ui/toaster";
 import { GlobalLoader } from "@/components/shared";
 
@@ -69,6 +70,7 @@ const App = () => {
           <Route path="/ai-insights" element={<AIInsights />} />
           {/* Clerk Test Route */}
           <Route path="/clerk-test" element={<ClerkTest />} />
+          <Route path="/clerk-debug" element={<ClerkDebug />} />
         </Route>
       </Routes>
 
