@@ -1,12 +1,8 @@
-import { useUserContext } from "@/context/AuthContext";
+import { useUserContext } from "@/context/SmartAuthContext";
 import { Loader } from "@/components/shared";
 
 const GlobalLoader = () => {
     const { isLoading, isInitialized } = useUserContext();
-
-    // Don't show loader on Clerk pages - Clerk handles its own loading
-    const isClerkPage = window.location.pathname.startsWith('/clerk-');
-    if (isClerkPage) return null;
 
     // Only show loader during initial authentication check - no navigation loading
     const shouldShowLoader = !isInitialized && isLoading;

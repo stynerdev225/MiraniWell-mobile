@@ -39,21 +39,13 @@ const AuthContext = createContext<IContextType>(INITIAL_STATE);
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const navigate = useNavigate();
 
-  // Check if we're on a Clerk page and completely disable Appwrite AuthContext
-  const isClerkPage = window.location.pathname.startsWith('/clerk-');
-
-  // Always initialize all hooks to avoid React hooks error
+  // Initialize all hooks - no Clerk page logic here anymore
   const [user, setUser] = useState<IUser>(INITIAL_USER);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [isLoading, setIsLoading] = useState(isClerkPage ? false : true); // Start with false on Clerk pages
-  const [isInitialized, setIsInitialized] = useState(isClerkPage ? true : false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isInitialized, setIsInitialized] = useState(false);
 
   const checkAuthUser = async () => {
-    // Skip Appwrite logic on Clerk pages
-    if (isClerkPage) {
-      return false;
-    }
-
     // Dynamic import to avoid loading Appwrite on Clerk pages
     const { getCurrentUser } = await import("@/lib/appwrite/api");
     const { isSessionError } = await import("@/lib/appwrite/sessionUtils");
@@ -104,16 +96,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const handleSessionExpired = useCallback(async () => {
-    // Skip Appwrite logic on Clerk pages
-    if (isClerkPage) {
-      return;
-    }
-
     console.log('Handling session expiration');
 
     // Dynamic import to avoid loading Appwrite on Clerk pages
     const { clearSessionData } = await import("@/lib/appwrite/sessionUtils");
-
+    
     // Clear session data
     clearSessionData();
 
@@ -125,14 +112,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (!window.location.pathname.includes('/clerk-') && !window.location.pathname.includes('/sign-in') && !window.location.pathname.includes('/sign-up')) {
       navigate('/clerk-sign-in');
     }
-  }, [navigate, isClerkPage]);
+  }, [navigate]);
 
   useEffect(() => {
-    // Skip Appwrite logic on Clerk pages
-    if (isClerkPage) {
-      return;
-    }
-
     const cookieFallback = localStorage.getItem("cookieFallback");
 
     // Only redirect if we're not already on a sign-in/sign-up page
@@ -166,7 +148,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         displayDevModeBanner();
       }
     });
-  }, [isClerkPage]);
+  }, []);
 
   const value = {
     user,

@@ -1,16 +1,13 @@
 import { Outlet, Navigate } from "react-router-dom";
 
-import { useUserContext } from "@/context/AuthContext";
+import { useUserContext } from "@/context/SmartAuthContext";
 
 export default function AuthLayout() {
   const { isAuthenticated } = useUserContext();
 
-  // Skip authentication check on Clerk pages - let Clerk handle it
-  const isClerkPage = window.location.pathname.startsWith('/clerk-');
-  
   return (
     <>
-      {!isClerkPage && isAuthenticated ? (
+      {isAuthenticated ? (
         <Navigate to="/" />
       ) : (
         <div className="mobile-form-wrapper">

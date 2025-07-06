@@ -2,7 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
 
-import { AuthProvider } from "@/context/AuthContext";
+import { SmartAuthProvider } from "@/context/SmartAuthContext";
 import { QueryProvider } from "@/lib/react-query/QueryProvider";
 import { ClerkAuthProvider } from "@/lib/clerk/ClerkAuthProvider";
 
@@ -18,9 +18,9 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
     <BrowserRouter>
       <ClerkAuthProvider>
         <QueryProvider>
-          <AuthProvider>
+          <SmartAuthProvider>
             <App />
-          </AuthProvider>
+          </SmartAuthProvider>
         </QueryProvider>
       </ClerkAuthProvider>
     </BrowserRouter>
